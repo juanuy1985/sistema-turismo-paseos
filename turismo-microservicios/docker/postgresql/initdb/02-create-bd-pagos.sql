@@ -30,7 +30,6 @@ WHERE NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = :'pagos_db_name')\ge
 DO $$
 BEGIN
   EXECUTE format('ALTER SCHEMA public OWNER TO %I', :'pagos_db_user');
-  EXECUTE format('GRANT USAGE, CREATE ON SCHEMA public TO %I', :'pagos_db_user');
   EXECUTE format('ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO %I', :'pagos_db_user');
   EXECUTE format('ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO %I', :'pagos_db_user');
   EXECUTE format('ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO %I', :'pagos_db_user');
