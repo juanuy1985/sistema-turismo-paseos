@@ -42,6 +42,7 @@ Microservicio de gestión de reservas.
   - Creación y gestión de reservas
   - Control de disponibilidad
   - Historial de reservas
+  - Endpoint de ejemplo reactivo solicitado por laboratorio: `GET /api/reservas/reactive/{id}` (WebFlux/Mono)
 
 ### 6. **ms-pagos**
 Microservicio de procesamiento de pagos.
