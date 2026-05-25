@@ -53,11 +53,12 @@ class ReservaServiceTest {
     @InjectMocks
     private ReservaService reservaService;
 
+    /** Creates a minimal feign Request required to instantiate FeignException.NotFound in tests. */
     private static Request dummyRequest() {
         return Request.create(Request.HttpMethod.GET, "/test", Collections.emptyMap(), null, null, null);
     }
 
-    private CrearReservaDTO crearDTO() {
+    private CrearReservaDTO buildValidCrearReservaDTO() {
         PersonaReservaDTO persona = PersonaReservaDTO.builder()
                 .nombres("Juan")
                 .apellidos("Perez")
@@ -76,7 +77,7 @@ class ReservaServiceTest {
         return dto;
     }
 
-    private PaqueteResponse paqueteActivo(int cuposDisponibles) {
+    private PaqueteResponse buildActivePaqueteResponse(int cuposDisponibles) {
         return new PaqueteResponse(10L, "Paquete Test", new BigDecimal("150.00"), "PEN",
                 cuposDisponibles, true, "Lima");
     }
@@ -84,11 +85,11 @@ class ReservaServiceTest {
     @Test
     void crear_registra_reserva_exitosamente() {
         when(clienteClient.obtenerPorId(1L)).thenReturn(new ClienteResponse());
-        when(paqueteClient.obtenerPorId(10L)).thenReturn(paqueteActivo(5));
+        when(paqueteClient.obtenerPorId(10L)).thenReturn(buildActivePaqueteResponse(5));
         when(reservaRepository.findByCodigoReserva(anyString())).thenReturn(Optional.empty());
         when(reservaRepository.save(any(Reserva.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        ReservaDTO resultado = reservaService.crear(crearDTO());
+        ReservaDTO resultado = reservaService.crear(buildValidCrearReservaDTO());
 
         assertThat(resultado).isNotNull();
         assertThat(resultado.getClienteId()).isEqualTo(1L);
@@ -103,7 +104,7 @@ class ReservaServiceTest {
         when(clienteClient.obtenerPorId(anyLong()))
                 .thenThrow(new FeignException.NotFound("Not Found", dummyRequest(), null, null));
 
-        assertThatThrownBy(() -> reservaService.crear(crearDTO()))
+        assertThatThrownBy(() -> reservaService.crear(buildValidCrearReservaDTO()))
                 .isInstanceOf(RecursoNoEncontradoException.class)
                 .hasMessageContaining("Cliente no encontrado");
     }
@@ -114,7 +115,7 @@ class ReservaServiceTest {
         when(paqueteClient.obtenerPorId(anyLong()))
                 .thenThrow(new FeignException.NotFound("Not Found", dummyRequest(), null, null));
 
-        assertThatThrownBy(() -> reservaService.crear(crearDTO()))
+        assertThatThrownBy(() -> reservaService.crear(buildValidCrearReservaDTO()))
                 .isInstanceOf(RecursoNoEncontradoException.class)
                 .hasMessageContaining("Paquete no encontrado");
     }
@@ -122,9 +123,9 @@ class ReservaServiceTest {
     @Test
     void crear_lanza_excepcion_cuando_cupos_insuficientes() {
         when(clienteClient.obtenerPorId(1L)).thenReturn(new ClienteResponse());
-        when(paqueteClient.obtenerPorId(10L)).thenReturn(paqueteActivo(0));
+        when(paqueteClient.obtenerPorId(10L)).thenReturn(buildActivePaqueteResponse(0));
 
-        assertThatThrownBy(() -> reservaService.crear(crearDTO()))
+        assertThatThrownBy(() -> reservaService.crear(buildValidCrearReservaDTO()))
                 .isInstanceOf(ReglaNegocioException.class)
                 .hasMessageContaining("cupos suficientes");
     }
