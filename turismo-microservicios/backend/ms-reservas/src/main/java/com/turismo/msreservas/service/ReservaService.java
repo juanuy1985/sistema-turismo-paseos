@@ -6,6 +6,7 @@ import com.turismo.msreservas.dto.*;
 import com.turismo.msreservas.exception.RecursoNoEncontradoException;
 import com.turismo.msreservas.model.DetalleReserva;
 import com.turismo.msreservas.model.EstadoReserva;
+import com.turismo.msreservas.model.PersonaReserva;
 import com.turismo.msreservas.model.Reserva;
 import com.turismo.msreservas.repository.ReservaRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -51,13 +51,11 @@ public class ReservaService {
     public ReservaDTO crear(CrearReservaDTO dto) {
         PaqueteDTO paquete = paqueteClient.obtenerPorId(dto.getPaqueteId());
 
-        BigDecimal montoTotal = paquete.getPrecio().multiply(BigDecimal.valueOf(dto.getCantidadPersonas()));
-
         DetalleReserva detalle = DetalleReserva.builder()
                 .cantidadPersonas(dto.getCantidadPersonas())
                 .precioUnitario(paquete.getPrecio())
-                .subtotal(montoTotal)
                 .build();
+        detalle.recalcularSubtotal();
 
         Reserva reserva = Reserva.builder()
                 .clienteId(dto.getClienteId())
@@ -66,7 +64,7 @@ public class ReservaService {
                 .fechaPaseo(dto.getFechaPaseo())
                 .estado(EstadoReserva.PENDIENTE)
                 .moneda(dto.getMoneda().toUpperCase())
-                .montoTotal(montoTotal)
+                .montoTotal(detalle.getSubtotal())
                 .build();
 
         reserva.addDetalle(detalle);
@@ -105,22 +103,30 @@ public class ReservaService {
                 .moneda(reserva.getMoneda())
                 .montoTotal(reserva.getMontoTotal())
                 .codigoReserva(reserva.getCodigoReserva())
-                .detalles(reserva.getDetalles().stream().map(detalle -> DetalleReservaDTO.builder()
-                        .id(detalle.getId())
-                        .cantidadPersonas(detalle.getCantidadPersonas())
-                        .precioUnitario(detalle.getPrecioUnitario())
-                        .subtotal(detalle.getSubtotal())
-                        .personas(detalle.getPersonas().stream().map(persona -> PersonaReservaDTO.builder()
-                                .id(persona.getId())
-                                .nombres(persona.getNombres())
-                                .apellidos(persona.getApellidos())
-                                .tipoDocumento(persona.getTipoDocumento())
-                                .numeroDocumento(persona.getNumeroDocumento())
-                                .edad(persona.getEdad())
-                                .build()).toList())
-                        .build()).toList())
+                .detalles(reserva.getDetalles().stream().map(this::toDetalleDTO).toList())
                 .creadoEn(reserva.getCreadoEn())
                 .actualizadoEn(reserva.getActualizadoEn())
+                .build();
+    }
+
+    private DetalleReservaDTO toDetalleDTO(DetalleReserva detalle) {
+        return DetalleReservaDTO.builder()
+                .id(detalle.getId())
+                .cantidadPersonas(detalle.getCantidadPersonas())
+                .precioUnitario(detalle.getPrecioUnitario())
+                .subtotal(detalle.getSubtotal())
+                .personas(detalle.getPersonas().stream().map(this::toPersonaDTO).toList())
+                .build();
+    }
+
+    private PersonaReservaDTO toPersonaDTO(PersonaReserva persona) {
+        return PersonaReservaDTO.builder()
+                .id(persona.getId())
+                .nombres(persona.getNombres())
+                .apellidos(persona.getApellidos())
+                .tipoDocumento(persona.getTipoDocumento())
+                .numeroDocumento(persona.getNumeroDocumento())
+                .edad(persona.getEdad())
                 .build();
     }
 }

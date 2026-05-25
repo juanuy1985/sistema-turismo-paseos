@@ -41,6 +41,10 @@ public class DetalleReserva {
     @PrePersist
     @PreUpdate
     protected void calcularSubtotal() {
+        recalcularSubtotal();
+    }
+
+    public void recalcularSubtotal() {
         if (precioUnitario != null && cantidadPersonas != null) {
             subtotal = precioUnitario.multiply(BigDecimal.valueOf(cantidadPersonas));
         }

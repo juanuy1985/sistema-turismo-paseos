@@ -44,7 +44,7 @@ public class Reserva {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal montoTotal;
 
-    @Column(nullable = false, unique = true, length = 20)
+    @Column(nullable = false, unique = true, length = 40)
     private String codigoReserva;
 
     @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -64,7 +64,7 @@ public class Reserva {
             estado = EstadoReserva.PENDIENTE;
         }
         if (codigoReserva == null || codigoReserva.isBlank()) {
-            codigoReserva = "RES-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            codigoReserva = "RES-" + UUID.randomUUID().toString().replace("-", "").toUpperCase();
         }
     }
 
