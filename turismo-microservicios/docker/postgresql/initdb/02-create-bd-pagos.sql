@@ -1,4 +1,4 @@
-\set ON_ERROR_STOP on
+\set ON_ERROR_STOP 1
 \getenv pagos_db_name PAGOS_DB_NAME
 \getenv pagos_db_user PAGOS_DB_USER
 \getenv pagos_db_password PAGOS_DB_PASSWORD
