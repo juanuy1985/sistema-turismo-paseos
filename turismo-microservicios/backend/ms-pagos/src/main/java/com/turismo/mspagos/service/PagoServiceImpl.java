@@ -119,6 +119,14 @@ public class PagoServiceImpl implements PagoService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<PagoResponse> listarPorCodigoReserva(String codigoReserva) {
+        return pagoRepository.findAllByCodigoReserva(codigoReserva).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<PagoResponse> listarPorEstado(EstadoPago estado) {
         return pagoRepository.findByEstado(estado).stream()
                 .map(this::mapToResponse)

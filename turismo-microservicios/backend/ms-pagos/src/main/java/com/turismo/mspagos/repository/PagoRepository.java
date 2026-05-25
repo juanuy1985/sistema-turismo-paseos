@@ -16,6 +16,8 @@ public interface PagoRepository extends JpaRepository<Pago, Long> {
 
     Optional<Pago> findByCodigoReserva(String codigoReserva);
 
+    List<Pago> findAllByCodigoReserva(String codigoReserva);
+
     List<Pago> findByEstado(EstadoPago estado);
 
     Optional<Pago> findByNumeroOperacion(String numeroOperacion);
