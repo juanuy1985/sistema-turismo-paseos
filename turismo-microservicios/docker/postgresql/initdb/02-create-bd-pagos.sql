@@ -8,6 +8,9 @@ BEGIN
   IF trim(coalesce(:'pagos_db_password', '')) = '' THEN
     RAISE EXCEPTION 'PAGOS_DB_PASSWORD no puede estar vacío';
   END IF;
+  IF length(:'pagos_db_password') < 8 THEN
+    RAISE EXCEPTION 'PAGOS_DB_PASSWORD debe tener al menos 8 caracteres';
+  END IF;
 END
 $$;
 
@@ -21,12 +24,6 @@ $$;
 
 SELECT format('CREATE DATABASE %I OWNER %I', :'pagos_db_name', :'pagos_db_user')
 WHERE NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = :'pagos_db_name')\gexec
-
-DO $$
-BEGIN
-  EXECUTE format('GRANT ALL PRIVILEGES ON DATABASE %I TO %I', :'pagos_db_name', :'pagos_db_user');
-END
-$$;
 
 \connect :pagos_db_name
 
