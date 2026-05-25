@@ -4,6 +4,7 @@ import com.turismo.mspagos.client.ReservaClient;
 import com.turismo.mspagos.dto.ComprobanteDTO;
 import com.turismo.mspagos.dto.PagoResponse;
 import com.turismo.mspagos.dto.RegistrarPagoDTO;
+import com.turismo.mspagos.event.PagoConfirmadoRegistradoEvent;
 import com.turismo.mspagos.dto.ReservaResponse;
 import com.turismo.mspagos.exception.RecursoNoEncontradoException;
 import com.turismo.mspagos.exception.ReglaNegocioException;
@@ -15,6 +16,7 @@ import com.turismo.mspagos.repository.PagoRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,7 @@ public class PagoServiceImpl implements PagoService {
 
     private final PagoRepository pagoRepository;
     private final ReservaClient reservaClient;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     @Transactional
@@ -97,6 +100,7 @@ public class PagoServiceImpl implements PagoService {
 
         Pago guardado = pagoRepository.save(pago);
         log.info("Pago registrado exitosamente con id={}, numeroOperacion={}", guardado.getId(), guardado.getNumeroOperacion());
+        applicationEventPublisher.publishEvent(new PagoConfirmadoRegistradoEvent(guardado));
 
         return mapToResponse(guardado);
     }
