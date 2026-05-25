@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -36,6 +37,17 @@ public class ReservaController {
     public ResponseEntity<ReservaDTO> obtenerPorId(@PathVariable Long id) {
         log.info("GET /api/reservas/{} - Buscando reserva por ID", id);
         return ResponseEntity.ok(reservaService.obtenerPorId(id));
+    }
+
+    @GetMapping("/reactive/{id}")
+    @Operation(
+            summary = "Obtener reserva por ID (reactivo)",
+            description = "Ejemplo de programación reactiva con WebFlux/Mono solicitado por el laboratorio"
+    )
+    public Mono<ResponseEntity<ReservaDTO>> obtenerPorIdReactive(@PathVariable Long id) {
+        log.info("GET /api/reservas/reactive/{} - Buscando reserva por ID en modo reactivo", id);
+        return reservaService.obtenerPorIdReactive(id)
+                .map(ResponseEntity::ok);
     }
 
     @GetMapping("/codigo/{codigoReserva}")
