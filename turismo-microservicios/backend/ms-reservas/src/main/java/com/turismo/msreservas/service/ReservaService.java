@@ -4,6 +4,7 @@ import com.turismo.msreservas.client.ClienteClient;
 import com.turismo.msreservas.client.PaqueteClient;
 import com.turismo.msreservas.config.RabbitMQConfig;
 import com.turismo.msreservas.dto.*;
+import com.turismo.msreservas.exception.ReglaNegocioException;
 import com.turismo.msreservas.exception.RecursoNoEncontradoException;
 import com.turismo.msreservas.model.DetalleReserva;
 import com.turismo.msreservas.model.EstadoReserva;
@@ -17,7 +18,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +56,8 @@ public class ReservaService {
 
     public ReservaDTO crear(CrearReservaDTO dto) {
         validarClienteExistente(dto.getClienteId());
-        PaqueteResponse paquete = paqueteClient.obtenerPorId(dto.getPaqueteId());
+        PaqueteResponse paquete = obtenerYValidarPaquete(dto.getPaqueteId(), dto.getCantidadPersonas());
+        BigDecimal montoTotal = calcularMontoTotal(paquete.getPrecio(), dto.getCantidadPersonas());
 
         DetalleReserva detalle = DetalleReserva.builder()
                 .cantidadPersonas(dto.getCantidadPersonas())
@@ -79,7 +83,8 @@ public class ReservaService {
                 .fechaPaseo(dto.getFechaPaseo())
                 .estado(EstadoReserva.PENDIENTE)
                 .moneda(dto.getMoneda().trim().toUpperCase())
-                .montoTotal(detalle.getSubtotal())
+                .montoTotal(montoTotal)
+                .codigoReserva(generarCodigoReservaUnico())
                 .build();
 
         reserva.addDetalle(detalle);
@@ -101,6 +106,44 @@ public class ReservaService {
         } catch (FeignException.NotFound ex) {
             throw new RecursoNoEncontradoException("Cliente no encontrado con ID: " + clienteId);
         }
+    }
+
+    private PaqueteResponse obtenerYValidarPaquete(Long paqueteId, Integer cantidadPersonas) {
+        PaqueteResponse paquete;
+        try {
+            paquete = paqueteClient.obtenerPorId(paqueteId);
+        } catch (FeignException.NotFound ex) {
+            throw new RecursoNoEncontradoException("Paquete no encontrado con ID: " + paqueteId);
+        }
+
+        if (!Boolean.TRUE.equals(paquete.getActivo())) {
+            throw new ReglaNegocioException("El paquete no está activo para reservas");
+        }
+
+        Integer cuposDisponibles = paquete.getCuposDisponibles();
+        if (cuposDisponibles == null || cuposDisponibles < cantidadPersonas) {
+            throw new ReglaNegocioException("El paquete no tiene cupos suficientes");
+        }
+
+        if (paquete.getPrecio() == null || paquete.getPrecio().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new ReglaNegocioException("El paquete no tiene un precio válido para reservar");
+        }
+
+        return paquete;
+    }
+
+    private BigDecimal calcularMontoTotal(BigDecimal precioUnitario, Integer cantidadPersonas) {
+        return precioUnitario.multiply(BigDecimal.valueOf(cantidadPersonas.longValue()));
+    }
+
+    private String generarCodigoReservaUnico() {
+        for (int intento = 0; intento < 5; intento++) {
+            String codigo = "RES-" + UUID.randomUUID().toString().replace("-", "").toUpperCase();
+            if (reservaRepository.findByCodigoReserva(codigo).isEmpty()) {
+                return codigo;
+            }
+        }
+        throw new ReglaNegocioException("No se pudo generar un código único de reserva");
     }
 
     public ReservaDTO actualizarEstado(Long id, EstadoReserva nuevoEstado) {
