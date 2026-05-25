@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: ms-reservas
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/bd_reservas}
+    username: ${DB_USERNAME:reservas_user}
+    password: ${DB_PASSWORD:cambiar_en_.env}
+    driver-class-name: org.postgresql.Driver
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: turismo_user
+    password: turismo_password
+
+server:
+  port: 8083
+  servlet:
+    context-path: /api/reservas
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    enabled: true
+  instance:
+    instance-id: ${spring.application.name}:${random.value}
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    operationIdStrategy: METHOD
+
+logging:
+  level:
+    root: INFO
+    com.turismo: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.springframework.web: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
