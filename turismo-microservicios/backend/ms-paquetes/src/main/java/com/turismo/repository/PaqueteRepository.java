@@ -20,7 +20,7 @@ public interface PaqueteRepository extends JpaRepository<Paquete, Long> {
     /**
      * Buscar paquetes por destino y estado activo
      */
-    List<Paquete> findByDestinoIdAndEstadoActivo(Long destinoId, Boolean estadoActivo);
+    List<Paquete> findByDestinoIdAndActivo(Long destinoId, Boolean activo);
 
     /**
      * Buscar paquetes por tipo de paseo
@@ -30,7 +30,7 @@ public interface PaqueteRepository extends JpaRepository<Paquete, Long> {
     /**
      * Buscar paquetes por tipo de paseo y estado activo
      */
-    List<Paquete> findByTipoPaseoIdAndEstadoActivo(Long tipoPaseoId, Boolean estadoActivo);
+    List<Paquete> findByTipoPaseoIdAndActivo(Long tipoPaseoId, Boolean activo);
 
     /**
      * Buscar paquetes por moneda
@@ -40,12 +40,12 @@ public interface PaqueteRepository extends JpaRepository<Paquete, Long> {
     /**
      * Buscar paquetes por moneda y estado activo
      */
-    List<Paquete> findByMonedaAndEstadoActivo(String moneda, Boolean estadoActivo);
+    List<Paquete> findByMonedaAndActivo(String moneda, Boolean activo);
 
     /**
      * Buscar paquetes por estado activo
      */
-    List<Paquete> findByEstadoActivo(Boolean estadoActivo);
+    List<Paquete> findByActivo(Boolean activo);
 
     /**
      * Buscar paquetes por destino y tipo de paseo
@@ -55,31 +55,31 @@ public interface PaqueteRepository extends JpaRepository<Paquete, Long> {
     /**
      * Buscar paquetes por destino, tipo de paseo y estado activo
      */
-    List<Paquete> findByDestinoIdAndTipoPaseoIdAndEstadoActivo(
-            Long destinoId, Long tipoPaseoId, Boolean estadoActivo);
+    List<Paquete> findByDestinoIdAndTipoPaseoIdAndActivo(
+            Long destinoId, Long tipoPaseoId, Boolean activo);
 
     /**
      * Buscar paquetes con cupos disponibles
      */
-    @Query("SELECT p FROM Paquete p WHERE p.cuposDisponibles > p.cuposReservados AND p.estadoActivo = true")
+    @Query("SELECT p FROM Paquete p WHERE p.cuposDisponibles > 0 AND p.activo = true")
     List<Paquete> findPaquetesConCuposDisponibles();
 
     /**
      * Buscar paquetes con cupos disponibles por destino
      */
     @Query("SELECT p FROM Paquete p WHERE p.destino.id = :destinoId " +
-           "AND p.cuposDisponibles > p.cuposReservados AND p.estadoActivo = true")
+           "AND p.cuposDisponibles > 0 AND p.activo = true")
     List<Paquete> findPaquetesConCuposPorDestino(@Param("destinoId") Long destinoId);
 
     /**
      * Buscar paquetes por título (búsqueda parcial)
      */
-    List<Paquete> findByTituloContainingIgnaseCase(String titulo);
+    List<Paquete> findByTituloContainingIgnoreCase(String titulo);
 
     /**
      * Buscar paquetes por título y estado activo
      */
-    List<Paquete> findByTituloContainingIgnoreCaseAndEstadoActivo(String titulo, Boolean estadoActivo);
+    List<Paquete> findByTituloContainingIgnoreCaseAndActivo(String titulo, Boolean activo);
 
     /**
      * Contar paquetes por destino
@@ -89,7 +89,7 @@ public interface PaqueteRepository extends JpaRepository<Paquete, Long> {
     /**
      * Contar paquetes activos por destino
      */
-    Long countByDestinoIdAndEstadoActivo(Long destinoId, Boolean estadoActivo);
+    Long countByDestinoIdAndActivo(Long destinoId, Boolean activo);
 
     /**
      * Verificar si existe un paquete por título
