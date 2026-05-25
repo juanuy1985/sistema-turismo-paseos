@@ -11,13 +11,23 @@ BEGIN
   IF length(:'pagos_db_password') < 8 THEN
     RAISE EXCEPTION 'PAGOS_DB_PASSWORD debe tener al menos 8 caracteres';
   END IF;
+  IF :'pagos_db_password' !~ '[A-Z]'
+     OR :'pagos_db_password' !~ '[a-z]'
+     OR :'pagos_db_password' !~ '[0-9]'
+     OR :'pagos_db_password' !~ '[^A-Za-z0-9]' THEN
+    RAISE EXCEPTION 'PAGOS_DB_PASSWORD debe incluir mayúsculas, minúsculas, números y símbolos';
+  END IF;
 END
 $$;
 
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_roles WHERE rolname = :'pagos_db_user') THEN
-    EXECUTE format('CREATE ROLE %I LOGIN PASSWORD %L', :'pagos_db_user', :'pagos_db_password');
+    EXECUTE format(
+      'CREATE ROLE %I LOGIN PASSWORD %L NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT',
+      :'pagos_db_user',
+      :'pagos_db_password'
+    );
   END IF;
 END
 $$;
