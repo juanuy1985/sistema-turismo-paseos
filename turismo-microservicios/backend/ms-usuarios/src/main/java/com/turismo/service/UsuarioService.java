@@ -17,6 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -25,12 +31,16 @@ import java.util.List;
 @Slf4j
 public class UsuarioService {
 
+    private static final int PBKDF2_ITERATIONS = 65536;
+    private static final int PBKDF2_KEY_LENGTH = 256;
+    private final SecureRandom secureRandom = new SecureRandom();
+
     private final UsuarioRepository usuarioRepository;
     private final ClienteRepository clienteRepository;
     private final RolRepository rolRepository;
 
     public UsuarioRespuestaDTO registrarUsuario(UsuarioRegistroDTO dto) {
-        validarDuplicadosUsuario(dto.getEmail(), dto.getUsername(), null);
+        validarDuplicadosRegistroUsuario(dto.getEmail(), dto.getUsername());
 
         Rol rol = rolRepository.findById(dto.getRolId())
                 .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
@@ -41,7 +51,7 @@ public class UsuarioService {
         usuario.setEmail(dto.getEmail());
         usuario.setTelefono(dto.getTelefono());
         usuario.setUsername(dto.getUsername());
-        usuario.setPasswordHash(dto.getPassword());
+        usuario.setPasswordHash(hashPassword(dto.getPassword()));
         usuario.setActivo(dto.getActivo());
         usuario.setRol(rol);
 
@@ -51,7 +61,7 @@ public class UsuarioService {
     }
 
     public ClienteRespuestaDTO registrarCliente(ClienteRegistroDTO dto) {
-        validarDuplicadosUsuario(dto.getEmail(), dto.getUsername(), dto.getNumeroDocumento());
+        validarDuplicadosRegistroCliente(dto.getEmail(), dto.getUsername(), dto.getNumeroDocumento());
 
         Rol rolCliente = rolRepository.findByNombre(RolNombre.CLIENTE)
                 .orElseThrow(() -> new IllegalArgumentException("No existe rol CLIENTE configurado"));
@@ -62,7 +72,7 @@ public class UsuarioService {
         usuario.setEmail(dto.getEmail());
         usuario.setTelefono(dto.getTelefono());
         usuario.setUsername(dto.getUsername());
-        usuario.setPasswordHash(dto.getPassword());
+        usuario.setPasswordHash(hashPassword(dto.getPassword()));
         usuario.setActivo(true);
         usuario.setRol(rolCliente);
 
@@ -104,7 +114,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        validarDuplicadosUsuario(dto.getEmail(), dto.getUsername(), null, id);
+        validarDuplicadosActualizacionUsuario(dto.getEmail(), dto.getUsername(), id);
 
         usuario.setNombres(dto.getNombres());
         usuario.setApellidos(dto.getApellidos());
@@ -127,27 +137,44 @@ public class UsuarioService {
         return toUsuarioRespuestaDTO(actualizado);
     }
 
-    private void validarDuplicadosUsuario(String email, String username, String numeroDocumento) {
+    private void validarDuplicadosRegistroUsuario(String email, String username) {
         if (usuarioRepository.existsByEmail(email)) {
             throw new IllegalArgumentException("El email ya está registrado");
         }
         if (usuarioRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("El username ya está registrado");
         }
+    }
+
+    private void validarDuplicadosRegistroCliente(String email, String username, String numeroDocumento) {
+        validarDuplicadosRegistroUsuario(email, username);
         if (numeroDocumento != null && clienteRepository.existsByNumeroDocumento(numeroDocumento)) {
             throw new IllegalArgumentException("El documento ya está registrado");
         }
     }
 
-    private void validarDuplicadosUsuario(String email, String username, String numeroDocumento, Long idUsuarioActual) {
+    private void validarDuplicadosActualizacionUsuario(String email, String username, Long idUsuarioActual) {
         if (usuarioRepository.existsByEmailAndIdNot(email, idUsuarioActual)) {
             throw new IllegalArgumentException("El email ya está registrado");
         }
         if (usuarioRepository.existsByUsernameAndIdNot(username, idUsuarioActual)) {
             throw new IllegalArgumentException("El username ya está registrado");
         }
-        if (numeroDocumento != null && clienteRepository.existsByNumeroDocumento(numeroDocumento)) {
-            throw new IllegalArgumentException("El documento ya está registrado");
+    }
+
+    private String hashPassword(String password) {
+        byte[] salt = new byte[16];
+        secureRandom.nextBytes(salt);
+        PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, PBKDF2_ITERATIONS, PBKDF2_KEY_LENGTH);
+
+        try {
+            SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+            byte[] hash = skf.generateSecret(spec).getEncoded();
+            return Base64.getEncoder().encodeToString(salt) + ":" + Base64.getEncoder().encodeToString(hash);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            throw new IllegalStateException("No se pudo hashear la contraseña", ex);
+        } finally {
+            spec.clearPassword();
         }
     }
 
