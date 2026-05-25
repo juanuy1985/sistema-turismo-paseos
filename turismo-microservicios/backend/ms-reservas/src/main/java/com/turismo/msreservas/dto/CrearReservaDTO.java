@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.FutureOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,4 +44,12 @@ public class CrearReservaDTO {
     @Size(min = 1, message = "Debe registrar al menos una persona")
     @Valid
     private List<PersonaReservaDTO> personas;
+
+    @AssertTrue(message = "La cantidad de personas debe coincidir con el número de personas registradas")
+    public boolean isCantidadPersonasConsistente() {
+        if (cantidadPersonas == null || personas == null) {
+            return true;
+        }
+        return cantidadPersonas.equals(personas.size());
+    }
 }
