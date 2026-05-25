@@ -15,10 +15,17 @@ spring:
     password: ${DB_PASSWORD:cambiar_en_.env}
     driver-class-name: org.postgresql.Driver
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: turismo_user
-    password: turismo_password
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:turismo_user}
+    password: ${RABBITMQ_PASSWORD:turismo_password}
+
+app:
+  rabbitmq:
+    reservas:
+      exchange: ${RABBITMQ_RESERVAS_EXCHANGE:turismo.exchange}
+      queue: ${RABBITMQ_RESERVAS_QUEUE:cola.reservas}
+      routing-key: ${RABBITMQ_RESERVAS_ROUTING_KEY:reserva.creada}
 
 server:
   port: 8083

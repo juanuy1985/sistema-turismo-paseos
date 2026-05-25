@@ -2,7 +2,6 @@ package com.turismo.msreservas.service;
 
 import com.turismo.msreservas.client.ClienteClient;
 import com.turismo.msreservas.client.PaqueteClient;
-import com.turismo.msreservas.config.RabbitMQConfig;
 import com.turismo.msreservas.dto.*;
 import com.turismo.msreservas.exception.ReglaNegocioException;
 import com.turismo.msreservas.exception.RecursoNoEncontradoException;
@@ -14,7 +13,9 @@ import com.turismo.msreservas.repository.ReservaRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,10 @@ public class ReservaService {
     private final ClienteClient clienteClient;
     private final PaqueteClient paqueteClient;
     private final RabbitTemplate rabbitTemplate;
+    private final DirectExchange reservasExchange;
+
+    @Value("${app.rabbitmq.reservas.routing-key}")
+    private String reservasRoutingKey;
 
     @Transactional(readOnly = true)
     public List<ReservaDTO> listarTodas() {
@@ -107,8 +112,8 @@ public class ReservaService {
         log.info("Reserva creada con ID: {}", guardada.getId());
 
         rabbitTemplate.convertAndSend(
-                RabbitMQConfig.RESERVAS_EXCHANGE,
-                RabbitMQConfig.RESERVAS_ROUTING_KEY,
+                reservasExchange.getName(),
+                reservasRoutingKey,
                 toDTO(guardada));
 
         return toDTO(guardada);
