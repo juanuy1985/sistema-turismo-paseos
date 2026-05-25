@@ -25,7 +25,7 @@ app:
     pagos:
       exchange: ${RABBITMQ_PAGOS_EXCHANGE:turismo.exchange}
       queue: ${RABBITMQ_PAGOS_QUEUE:cola.pagos}
-      routing-key: ${RABBITMQ_PAGOS_ROUTING_KEY:pago.procesado}
+      routing-key: ${RABBITMQ_PAGOS_ROUTING_KEY:pago.confirmado}
 
 server:
   port: 8084
