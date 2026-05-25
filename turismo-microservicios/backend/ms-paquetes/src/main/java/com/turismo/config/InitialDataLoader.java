@@ -38,7 +38,7 @@ public class InitialDataLoader implements ApplicationRunner {
         Map<String, Destino> destinos = new HashMap<>();
         destinos.put("Machu Picchu", obtenerOCrearDestino("Machu Picchu", "Perú", "Cusco"));
         destinos.put("Paracas", obtenerOCrearDestino("Paracas", "Perú", "Ica"));
-        destinos.put("Laguna 69", obtenerOCrearDestino("Laguna 69", "Perú", "Áncash"));
+        destinos.put("Laguna 69", obtenerOCrearDestino("Laguna 69", "Perú", "Ancash"));
         destinos.put("Cusco", obtenerOCrearDestino("Cusco", "Perú", "Cusco"));
         destinos.put("Arequipa", obtenerOCrearDestino("Arequipa", "Perú", "Arequipa"));
         destinos.put("Iquitos", obtenerOCrearDestino("Iquitos", "Perú", "Loreto"));
@@ -171,6 +171,7 @@ public class InitialDataLoader implements ApplicationRunner {
             Boolean activo
     ) {
         if (paqueteRepository.existsByTitulo(titulo)) {
+            log.debug("Paquete inicial ya existe, se omite creación: {}", titulo);
             return;
         }
 
