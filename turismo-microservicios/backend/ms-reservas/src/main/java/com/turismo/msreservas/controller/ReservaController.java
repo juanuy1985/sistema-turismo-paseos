@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/reservas")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Reservas", description = "API REST para la gestión de reservas turísticas")
@@ -38,11 +38,25 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.obtenerPorId(id));
     }
 
+    @GetMapping("/codigo/{codigoReserva}")
+    @Operation(summary = "Obtener reserva por código de reserva")
+    public ResponseEntity<ReservaDTO> obtenerPorCodigo(@PathVariable String codigoReserva) {
+        log.info("GET /api/reservas/codigo/{} - Buscando reserva por código", codigoReserva);
+        return ResponseEntity.ok(reservaService.obtenerPorCodigo(codigoReserva));
+    }
+
     @GetMapping("/cliente/{clienteId}")
     @Operation(summary = "Listar reservas por cliente")
     public ResponseEntity<List<ReservaDTO>> listarPorCliente(@PathVariable Long clienteId) {
         log.info("GET /api/reservas/cliente/{} - Listando reservas por cliente", clienteId);
         return ResponseEntity.ok(reservaService.listarPorCliente(clienteId));
+    }
+
+    @GetMapping("/estado/{estado}")
+    @Operation(summary = "Listar reservas por estado")
+    public ResponseEntity<List<ReservaDTO>> listarPorEstado(@PathVariable EstadoReserva estado) {
+        log.info("GET /api/reservas/estado/{} - Listando reservas por estado", estado);
+        return ResponseEntity.ok(reservaService.listarPorEstado(estado));
     }
 
     @PostMapping

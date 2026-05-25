@@ -48,8 +48,22 @@ public class ReservaService {
     }
 
     @Transactional(readOnly = true)
+    public ReservaDTO obtenerPorCodigo(String codigoReserva) {
+        return reservaRepository.findByCodigoReserva(codigoReserva)
+                .map(this::toDTO)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Reserva no encontrada con código: " + codigoReserva));
+    }
+
+    @Transactional(readOnly = true)
     public List<ReservaDTO> listarPorCliente(Long clienteId) {
         return reservaRepository.findByClienteId(clienteId).stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservaDTO> listarPorEstado(EstadoReserva estado) {
+        return reservaRepository.findByEstado(estado).stream()
                 .map(this::toDTO)
                 .toList();
     }
