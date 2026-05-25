@@ -34,7 +34,6 @@ public class Pago {
     @Column(nullable = false, length = 20)
     private EstadoPago estado;
 
-    @Column(nullable = false)
     private LocalDateTime fechaPago;
 
     @Enumerated(EnumType.STRING)
@@ -44,7 +43,7 @@ public class Pago {
     @Column(length = 100)
     private String numeroOperacion;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "comprobante_id")
     private Comprobante comprobante;
 
@@ -59,9 +58,6 @@ public class Pago {
         actualizadoEn = LocalDateTime.now();
         if (estado == null) {
             estado = EstadoPago.PENDIENTE;
-        }
-        if (fechaPago == null) {
-            fechaPago = LocalDateTime.now();
         }
     }
 
