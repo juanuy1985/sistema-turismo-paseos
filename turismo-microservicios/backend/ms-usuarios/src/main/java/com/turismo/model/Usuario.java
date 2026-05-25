@@ -48,9 +48,9 @@ public class Usuario {
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
-    @NotBlank(message = "La contraseña es requerida")
-    @Column(nullable = false, length = 255)
-    private String password;
+    @NotBlank(message = "El hash de contraseña es requerido")
+    @Column(name = "password_hash", nullable = false, length = 255)
+    private String passwordHash;
 
     @NotNull(message = "El estado activo es requerido")
     @Column(nullable = false)
