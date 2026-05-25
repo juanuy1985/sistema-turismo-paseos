@@ -6,6 +6,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "reservas")
@@ -20,7 +23,7 @@ public class Reserva {
     private Long id;
 
     @Column(nullable = false)
-    private Long usuarioId;
+    private Long clienteId;
 
     @Column(nullable = false)
     private Long paqueteId;
@@ -29,14 +32,24 @@ public class Reserva {
     private LocalDate fechaReserva;
 
     @Column(nullable = false)
-    private Integer cantidadPersonas;
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal precioTotal;
+    private LocalDate fechaPaseo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private EstadoReserva estado;
+
+    @Column(nullable = false, length = 3)
+    private String moneda;
+
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal montoTotal;
+
+    @Column(nullable = false, unique = true, length = 20)
+    private String codigoReserva;
+
+    @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<DetalleReserva> detalles = new ArrayList<>();
 
     @Column(updatable = false)
     private LocalDateTime creadoEn;
@@ -50,10 +63,23 @@ public class Reserva {
         if (estado == null) {
             estado = EstadoReserva.PENDIENTE;
         }
+        if (codigoReserva == null || codigoReserva.isBlank()) {
+            codigoReserva = "RES-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        }
     }
 
     @PreUpdate
     protected void onUpdate() {
         actualizadoEn = LocalDateTime.now();
+    }
+
+    public void addDetalle(DetalleReserva detalle) {
+        detalles.add(detalle);
+        detalle.setReserva(this);
+    }
+
+    public void removeDetalle(DetalleReserva detalle) {
+        detalles.remove(detalle);
+        detalle.setReserva(null);
     }
 }

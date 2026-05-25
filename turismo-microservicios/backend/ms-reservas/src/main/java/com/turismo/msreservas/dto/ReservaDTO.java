@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,12 +18,15 @@ import java.time.LocalDateTime;
 public class ReservaDTO {
 
     private Long id;
-    private Long usuarioId;
+    private Long clienteId;
     private Long paqueteId;
     private LocalDate fechaReserva;
-    private Integer cantidadPersonas;
-    private BigDecimal precioTotal;
+    private LocalDate fechaPaseo;
     private EstadoReserva estado;
+    private String moneda;
+    private BigDecimal montoTotal;
+    private String codigoReserva;
+    private List<DetalleReservaDTO> detalles;
     private LocalDateTime creadoEn;
     private LocalDateTime actualizadoEn;
 }

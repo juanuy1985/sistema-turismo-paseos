@@ -38,17 +38,17 @@ public class ReservaController {
         return ResponseEntity.ok(reservaService.obtenerPorId(id));
     }
 
-    @GetMapping("/usuario/{usuarioId}")
-    @Operation(summary = "Listar reservas por usuario")
-    public ResponseEntity<List<ReservaDTO>> listarPorUsuario(@PathVariable Long usuarioId) {
-        log.info("GET /api/reservas/usuario/{} - Listando reservas por usuario", usuarioId);
-        return ResponseEntity.ok(reservaService.listarPorUsuario(usuarioId));
+    @GetMapping("/cliente/{clienteId}")
+    @Operation(summary = "Listar reservas por cliente")
+    public ResponseEntity<List<ReservaDTO>> listarPorCliente(@PathVariable Long clienteId) {
+        log.info("GET /api/reservas/cliente/{} - Listando reservas por cliente", clienteId);
+        return ResponseEntity.ok(reservaService.listarPorCliente(clienteId));
     }
 
     @PostMapping
     @Operation(summary = "Crear una nueva reserva")
     public ResponseEntity<ReservaDTO> crear(@Valid @RequestBody CrearReservaDTO dto) {
-        log.info("POST /api/reservas - Creando reserva para usuario {}", dto.getUsuarioId());
+        log.info("POST /api/reservas - Creando reserva para cliente {}", dto.getClienteId());
         return ResponseEntity.status(HttpStatus.CREATED).body(reservaService.crear(dto));
     }
 
