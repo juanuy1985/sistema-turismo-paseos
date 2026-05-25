@@ -1,5 +1,6 @@
 package com.turismo.msreservas.service;
 
+import com.turismo.msreservas.client.ClienteClient;
 import com.turismo.msreservas.client.PaqueteClient;
 import com.turismo.msreservas.config.RabbitMQConfig;
 import com.turismo.msreservas.dto.*;
@@ -24,6 +25,7 @@ import java.util.List;
 public class ReservaService {
 
     private final ReservaRepository reservaRepository;
+    private final ClienteClient clienteClient;
     private final PaqueteClient paqueteClient;
     private final RabbitTemplate rabbitTemplate;
 
@@ -49,6 +51,7 @@ public class ReservaService {
     }
 
     public ReservaDTO crear(CrearReservaDTO dto) {
+        validarClienteExistente(dto.getClienteId());
         PaqueteResponse paquete = paqueteClient.obtenerPorId(dto.getPaqueteId());
 
         DetalleReserva detalle = DetalleReserva.builder()
@@ -89,6 +92,13 @@ public class ReservaService {
                 toDTO(guardada));
 
         return toDTO(guardada);
+    }
+
+    private void validarClienteExistente(Long clienteId) {
+        ClienteResponse cliente = clienteClient.obtenerPorId(clienteId);
+        if (cliente == null) {
+            throw new RecursoNoEncontradoException("Cliente no encontrado con ID: " + clienteId);
+        }
     }
 
     public ReservaDTO actualizarEstado(Long id, EstadoReserva nuevoEstado) {
