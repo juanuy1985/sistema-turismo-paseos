@@ -31,7 +31,10 @@ public class UsuarioRegistroDTO {
 
     @NotBlank(message = "El teléfono es requerido")
     @Size(max = 20, message = "El teléfono no debe exceder 20 caracteres")
-    @Pattern(regexp = "^\\+?[0-9]{7,20}$", message = "El teléfono debe contener solo dígitos y puede iniciar con +")
+    @Pattern(
+            regexp = "^\\+?[0-9]{7,20}$",
+            message = "El teléfono debe contener entre 7 y 20 dígitos y puede iniciar con +"
+    )
     private String telefono;
 
     @NotBlank(message = "El username es requerido")

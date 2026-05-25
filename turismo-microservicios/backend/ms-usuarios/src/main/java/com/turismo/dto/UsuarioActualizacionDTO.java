@@ -31,7 +31,10 @@ public class UsuarioActualizacionDTO {
 
     @NotBlank(message = "El teléfono es requerido")
     @Size(max = 20, message = "El teléfono no debe exceder 20 caracteres")
-    @Pattern(regexp = "^\\+?[0-9]{7,20}$", message = "El teléfono debe contener solo dígitos y puede iniciar con +")
+    @Pattern(
+            regexp = "^\\+?[0-9]{7,20}$",
+            message = "El teléfono debe contener entre 7 y 20 dígitos y puede iniciar con +"
+    )
     private String telefono;
 
     @NotBlank(message = "El username es requerido")
@@ -39,6 +42,10 @@ public class UsuarioActualizacionDTO {
     @Pattern(regexp = "^[a-zA-Z0-9._-]+$", message = "El username solo permite letras, números, punto, guión y guión bajo")
     private String username;
 
+    @Pattern(
+            regexp = ".*\\S.*",
+            message = "La contraseña no puede contener solo espacios en blanco"
+    )
     @Size(min = 8, max = 255, message = "La contraseña debe tener entre 8 y 255 caracteres")
     private String password;
 
