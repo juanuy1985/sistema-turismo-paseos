@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PersonaReservaDTO {
 
+    private static final int MAX_EDAD_PERMITIDA = 120;
+
     private Long id;
 
     @NotBlank(message = "Los nombres de la persona son obligatorios")
@@ -31,6 +33,6 @@ public class PersonaReservaDTO {
 
     @NotNull(message = "La edad de la persona es obligatoria")
     @Min(value = 0, message = "La edad de la persona no puede ser negativa")
-    @Max(value = 120, message = "La edad de la persona no puede superar 120 años")
+    @Max(value = MAX_EDAD_PERMITIDA, message = "La edad de la persona no puede superar 120 años")
     private Integer edad;
 }

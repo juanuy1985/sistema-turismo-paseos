@@ -46,7 +46,7 @@ public class CrearReservaDTO {
     private List<PersonaReservaDTO> personas;
 
     @AssertTrue(message = "La cantidad de personas debe coincidir con el número de personas registradas")
-    public boolean isCantidadPersonasConsistente() {
+    public boolean esCantidadPersonasConsistente() {
         if (cantidadPersonas == null || personas == null) {
             return true;
         }
