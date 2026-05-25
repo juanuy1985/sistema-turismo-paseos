@@ -5,6 +5,8 @@ import com.turismo.dto.ClienteRespuestaDTO;
 import com.turismo.dto.UsuarioActualizacionBasicaDTO;
 import com.turismo.dto.UsuarioRegistroDTO;
 import com.turismo.dto.UsuarioRespuestaDTO;
+import com.turismo.exception.RecursoDuplicadoException;
+import com.turismo.exception.RecursoNoEncontradoException;
 import com.turismo.model.Cliente;
 import com.turismo.model.Rol;
 import com.turismo.model.RolNombre;
@@ -43,7 +45,7 @@ public class UsuarioService {
         validarDuplicadosRegistroUsuario(dto.getEmail(), dto.getUsername());
 
         Rol rol = rolRepository.findById(dto.getRolId())
-                .orElseThrow(() -> new IllegalArgumentException("Rol no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Rol no encontrado"));
 
         Usuario usuario = new Usuario();
         usuario.setNombres(dto.getNombres());
@@ -64,7 +66,7 @@ public class UsuarioService {
         validarDuplicadosRegistroCliente(dto.getEmail(), dto.getUsername(), dto.getNumeroDocumento());
 
         Rol rolCliente = rolRepository.findByNombre(RolNombre.CLIENTE)
-                .orElseThrow(() -> new IllegalArgumentException("No existe rol CLIENTE configurado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("No existe rol CLIENTE configurado"));
 
         Usuario usuario = new Usuario();
         usuario.setNombres(dto.getNombres());
@@ -99,20 +101,20 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public UsuarioRespuestaDTO buscarUsuarioPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
         return toUsuarioRespuestaDTO(usuario);
     }
 
     @Transactional(readOnly = true)
     public ClienteRespuestaDTO buscarClientePorDocumento(String numeroDocumento) {
         Cliente cliente = clienteRepository.findByNumeroDocumento(numeroDocumento)
-                .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Cliente no encontrado"));
         return toClienteRespuestaDTO(cliente);
     }
 
     public UsuarioRespuestaDTO actualizarDatosBasicos(Long id, UsuarioActualizacionBasicaDTO dto) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
 
         validarDuplicadosActualizacionUsuario(dto.getEmail(), dto.getUsername(), id);
 
@@ -129,7 +131,7 @@ public class UsuarioService {
 
     public UsuarioRespuestaDTO desactivarUsuario(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Usuario no encontrado"));
 
         usuario.setActivo(false);
         Usuario actualizado = usuarioRepository.save(usuario);
@@ -139,26 +141,26 @@ public class UsuarioService {
 
     private void validarDuplicadosRegistroUsuario(String email, String username) {
         if (usuarioRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("El email ya está registrado");
+            throw new RecursoDuplicadoException("El email ya está registrado");
         }
         if (usuarioRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("El username ya está registrado");
+            throw new RecursoDuplicadoException("El username ya está registrado");
         }
     }
 
     private void validarDuplicadosRegistroCliente(String email, String username, String numeroDocumento) {
         validarDuplicadosRegistroUsuario(email, username);
         if (numeroDocumento != null && clienteRepository.existsByNumeroDocumento(numeroDocumento)) {
-            throw new IllegalArgumentException("El documento ya está registrado");
+            throw new RecursoDuplicadoException("El documento ya está registrado");
         }
     }
 
     private void validarDuplicadosActualizacionUsuario(String email, String username, Long idUsuarioActual) {
         if (usuarioRepository.existsByEmailAndIdNot(email, idUsuarioActual)) {
-            throw new IllegalArgumentException("El email ya está registrado");
+            throw new RecursoDuplicadoException("El email ya está registrado");
         }
         if (usuarioRepository.existsByUsernameAndIdNot(username, idUsuarioActual)) {
-            throw new IllegalArgumentException("El username ya está registrado");
+            throw new RecursoDuplicadoException("El username ya está registrado");
         }
     }
 
