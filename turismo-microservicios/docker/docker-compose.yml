@@ -13,6 +13,9 @@ services:
       RESERVAS_DB_NAME: ${RESERVAS_DB_NAME:-bd_reservas}
       RESERVAS_DB_USER: ${RESERVAS_DB_USER:-reservas_user}
       RESERVAS_DB_PASSWORD: ${RESERVAS_DB_PASSWORD:-cambiar_en_.env}
+      PAGOS_DB_NAME: ${PAGOS_DB_NAME:-bd_pagos}
+      PAGOS_DB_USER: ${PAGOS_DB_USER:-pagos_user}
+      PAGOS_DB_PASSWORD: ${PAGOS_DB_PASSWORD:?PAGOS_DB_PASSWORD es obligatorio}
     ports:
       - "5432:5432"
     volumes:
@@ -65,3 +68,8 @@ x-ms-reservas-db-config:
   DB_URL: jdbc:postgresql://postgresql:5432/${RESERVAS_DB_NAME:-bd_reservas}
   DB_USERNAME: ${RESERVAS_DB_USER:-reservas_user}
   DB_PASSWORD: ${RESERVAS_DB_PASSWORD:-cambiar_en_.env}
+
+x-ms-pagos-db-config:
+  DB_URL: jdbc:postgresql://postgresql:5432/${PAGOS_DB_NAME:-bd_pagos}
+  DB_USERNAME: ${PAGOS_DB_USER:-pagos_user}
+  DB_PASSWORD: ${PAGOS_DB_PASSWORD:?PAGOS_DB_PASSWORD es obligatorio}
