@@ -49,7 +49,7 @@ public class ReservaService {
     }
 
     public ReservaDTO crear(CrearReservaDTO dto) {
-        PaqueteDTO paquete = paqueteClient.obtenerPorId(dto.getPaqueteId());
+        PaqueteResponse paquete = paqueteClient.obtenerPorId(dto.getPaqueteId());
 
         DetalleReserva detalle = DetalleReserva.builder()
                 .cantidadPersonas(dto.getCantidadPersonas())
