@@ -33,7 +33,7 @@ public class PaqueteService {
     @Transactional(readOnly = true)
     public List<Paquete> listarActivos() {
         log.info("Listando paquetes activos");
-        return paqueteRepository.findByEstadoActivo(true);
+        return paqueteRepository.findByActivo(true);
     }
 
     /**
@@ -59,7 +59,7 @@ public class PaqueteService {
             log.warn("Destino ID inválido: {}", destinoId);
             return List.of();
         }
-        return paqueteRepository.findByDestinoIdAndEstadoActivo(destinoId, true);
+        return paqueteRepository.findByDestinoIdAndActivo(destinoId, true);
     }
 
     /**
@@ -85,7 +85,7 @@ public class PaqueteService {
             log.warn("Tipo de paseo ID inválido: {}", tipoPaseoId);
             return List.of();
         }
-        return paqueteRepository.findByTipoPaseoIdAndEstadoActivo(tipoPaseoId, true);
+        return paqueteRepository.findByTipoPaseoIdAndActivo(tipoPaseoId, true);
     }
 
     /**
@@ -111,7 +111,7 @@ public class PaqueteService {
             log.warn("Parámetros inválidos - Destino ID: {}, Tipo de paseo ID: {}", destinoId, tipoPaseoId);
             return List.of();
         }
-        return paqueteRepository.findByDestinoIdAndTipoPaseoIdAndEstadoActivo(destinoId, tipoPaseoId, true);
+        return paqueteRepository.findByDestinoIdAndTipoPaseoIdAndActivo(destinoId, tipoPaseoId, true);
     }
 
     /**
@@ -124,7 +124,7 @@ public class PaqueteService {
             log.warn("Moneda inválida: {}", moneda);
             return List.of();
         }
-        return paqueteRepository.findByMonedaAndEstadoActivo(moneda.toUpperCase(), true);
+        return paqueteRepository.findByMonedaAndActivo(moneda.toUpperCase(), true);
     }
 
     /**
@@ -228,9 +228,9 @@ public class PaqueteService {
             return false;
         }
 
-        p.setCuposReservados(p.getCuposReservados() + cantidadCupos);
+        p.setCuposDisponibles(p.getCuposDisponibles() - cantidadCupos);
         paqueteRepository.save(p);
-        log.info("Reserva exitosa para paquete {}. Nuevos cupos reservados: {}", paqueteId, p.getCuposReservados());
+        log.info("Reserva exitosa para paquete {}. Cupos disponibles restantes: {}", paqueteId, p.getCuposDisponibles());
         return true;
     }
 
@@ -246,7 +246,7 @@ public class PaqueteService {
             throw new IllegalArgumentException("El paquete debe tener un título válido");
         }
 
-        if (paquete.getDestinoId() == null || paquete.getTipoPaseoId() == null) {
+        if (paquete.getDestino() == null || paquete.getTipoPaseo() == null) {
             log.warn("El paquete debe tener destino y tipo de paseo");
             throw new IllegalArgumentException("El paquete debe tener destino y tipo de paseo");
         }
@@ -256,8 +256,7 @@ public class PaqueteService {
             throw new IllegalArgumentException("Los cupos disponibles deben ser mayores a 0");
         }
 
-        paquete.setCuposReservados(0);
-        paquete.setEstadoActivo(true);
+        paquete.setActivo(true);
 
         Paquete creado = paqueteRepository.save(paquete);
         log.info("Paquete creado exitosamente con ID: {}", creado.getId());
@@ -304,8 +303,8 @@ public class PaqueteService {
             p.setDuracionDias(paqueteActualizado.getDuracionDias());
         }
         
-        if (paqueteActualizado.getEstadoActivo() != null) {
-            p.setEstadoActivo(paqueteActualizado.getEstadoActivo());
+        if (paqueteActualizado.getActivo() != null) {
+            p.setActivo(paqueteActualizado.getActivo());
         }
 
         Paquete actualizado = paqueteRepository.save(p);
@@ -332,7 +331,7 @@ public class PaqueteService {
         }
 
         Paquete p = paquete.get();
-        p.setEstadoActivo(estado);
+        p.setActivo(estado);
         Paquete actualizado = paqueteRepository.save(p);
         log.info("Estado del paquete {} cambiado exitosamente a: {}", id, estado);
         return actualizado;
@@ -348,7 +347,7 @@ public class PaqueteService {
             log.warn("Destino ID inválido: {}", destinoId);
             return 0L;
         }
-        return paqueteRepository.countByDestinoIdAndEstadoActivo(destinoId, true);
+        return paqueteRepository.countByDestinoIdAndActivo(destinoId, true);
     }
 
     /**
