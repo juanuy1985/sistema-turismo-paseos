@@ -4,6 +4,7 @@ import com.turismo.msreservas.dto.ReservaCreadaEvent;
 import com.turismo.msreservas.model.Reserva;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +30,7 @@ public class ReservaCreadaPublisher {
                     evento
             );
             log.info("Evento de reserva creada publicado para reservaId={} codigo={}", evento.getReservaId(), evento.getCodigoReserva());
-        } catch (RuntimeException ex) {
+        } catch (AmqpException ex) {
             log.error("Error al publicar evento de reserva creada para reservaId={} codigo={}", evento.getReservaId(), evento.getCodigoReserva(), ex);
             throw ex;
         }
