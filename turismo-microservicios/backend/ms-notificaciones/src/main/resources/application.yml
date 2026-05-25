@@ -7,6 +7,16 @@ spring:
     username: ${RABBITMQ_USERNAME:turismo_user}
     password: ${RABBITMQ_PASSWORD:turismo_password}
 
+app:
+  rabbitmq:
+    exchange: ${RABBITMQ_EXCHANGE:turismo.exchange}
+    reservas:
+      queue: ${RABBITMQ_RESERVAS_QUEUE:cola.reservas}
+      routing-key: ${RABBITMQ_RESERVAS_ROUTING_KEY:reserva.creada}
+    pagos:
+      queue: ${RABBITMQ_PAGOS_QUEUE:cola.pagos}
+      routing-key: ${RABBITMQ_PAGOS_ROUTING_KEY:pago.confirmado}
+
 server:
   port: 8085
 
