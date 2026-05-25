@@ -9,9 +9,10 @@ import { ReservasService } from '../../../services/reservas.service';
 import { FlujoNotificacionesService } from '../../../features/flujo/flujo-notificaciones.service';
 
 @Component({
-  selector: 'app-reserva-crear',
-  templateUrl: './reserva-crear.component.html',
-  styleUrl: './reserva-crear.component.scss'
+    selector: 'app-reserva-crear',
+    templateUrl: './reserva-crear.component.html',
+    styleUrl: './reserva-crear.component.scss',
+    standalone: false
 })
 export class ReservaCrearComponent implements OnInit {
   paquetes: Paquete[] = [];

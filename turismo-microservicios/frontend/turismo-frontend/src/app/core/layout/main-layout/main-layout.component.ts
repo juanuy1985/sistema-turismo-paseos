@@ -6,9 +6,10 @@ interface MenuItem {
 }
 
 @Component({
-  selector: 'app-main-layout',
-  templateUrl: './main-layout.component.html',
-  styleUrl: './main-layout.component.scss'
+    selector: 'app-main-layout',
+    templateUrl: './main-layout.component.html',
+    styleUrl: './main-layout.component.scss',
+    standalone: false
 })
 export class MainLayoutComponent {
   readonly menu: MenuItem[] = [

@@ -4,9 +4,10 @@ import { Paquete } from '../../../models/paquete.model';
 import { PaquetesService } from '../../../services/paquetes.service';
 
 @Component({
-  selector: 'app-paquetes-list',
-  templateUrl: './paquetes-list.component.html',
-  styleUrl: './paquetes-list.component.scss'
+    selector: 'app-paquetes-list',
+    templateUrl: './paquetes-list.component.html',
+    styleUrl: './paquetes-list.component.scss',
+    standalone: false
 })
 export class PaquetesListComponent implements OnInit {
   paquetes: Paquete[] = [];

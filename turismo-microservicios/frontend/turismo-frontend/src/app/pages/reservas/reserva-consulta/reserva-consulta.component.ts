@@ -4,9 +4,10 @@ import { Reserva } from '../../../models/reserva.model';
 import { ReservasService } from '../../../services/reservas.service';
 
 @Component({
-  selector: 'app-reserva-consulta',
-  templateUrl: './reserva-consulta.component.html',
-  styleUrl: './reserva-consulta.component.scss'
+    selector: 'app-reserva-consulta',
+    templateUrl: './reserva-consulta.component.html',
+    styleUrl: './reserva-consulta.component.scss',
+    standalone: false
 })
 export class ReservaConsultaComponent {
   loading = false;

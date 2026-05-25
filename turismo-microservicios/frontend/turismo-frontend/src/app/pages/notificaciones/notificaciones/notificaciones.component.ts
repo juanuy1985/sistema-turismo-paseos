@@ -3,9 +3,10 @@ import { FlujoNotificacionesService } from '../../../features/flujo/flujo-notifi
 import { Notificacion } from '../../../models/notificacion.model';
 
 @Component({
-  selector: 'app-notificaciones',
-  templateUrl: './notificaciones.component.html',
-  styleUrl: './notificaciones.component.scss'
+    selector: 'app-notificaciones',
+    templateUrl: './notificaciones.component.html',
+    styleUrl: './notificaciones.component.scss',
+    standalone: false
 })
 export class NotificacionesComponent implements OnInit {
   notificaciones: Notificacion[] = [];

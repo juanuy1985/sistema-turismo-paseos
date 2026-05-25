@@ -4,9 +4,10 @@ import { Cliente } from '../../../models/cliente.model';
 import { ClientesService } from '../../../services/clientes.service';
 
 @Component({
-  selector: 'app-cliente-registro',
-  templateUrl: './cliente-registro.component.html',
-  styleUrl: './cliente-registro.component.scss'
+    selector: 'app-cliente-registro',
+    templateUrl: './cliente-registro.component.html',
+    styleUrl: './cliente-registro.component.scss',
+    standalone: false
 })
 export class ClienteRegistroComponent {
   loading = false;

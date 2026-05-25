@@ -4,9 +4,10 @@ import { Paquete } from '../../../models/paquete.model';
 import { PaquetesService } from '../../../services/paquetes.service';
 
 @Component({
-  selector: 'app-paquete-detail',
-  templateUrl: './paquete-detail.component.html',
-  styleUrl: './paquete-detail.component.scss'
+    selector: 'app-paquete-detail',
+    templateUrl: './paquete-detail.component.html',
+    styleUrl: './paquete-detail.component.scss',
+    standalone: false
 })
 export class PaqueteDetailComponent implements OnInit {
   paquete: Paquete | null = null;

@@ -6,9 +6,10 @@ import { PagosService } from '../../../services/pagos.service';
 import { FlujoNotificacionesService } from '../../../features/flujo/flujo-notificaciones.service';
 
 @Component({
-  selector: 'app-pago-procesar',
-  templateUrl: './pago-procesar.component.html',
-  styleUrl: './pago-procesar.component.scss'
+    selector: 'app-pago-procesar',
+    templateUrl: './pago-procesar.component.html',
+    styleUrl: './pago-procesar.component.scss',
+    standalone: false
 })
 export class PagoProcesarComponent {
   readonly metodosPago: MetodoPago[] = ['TARJETA', 'TRANSFERENCIA', 'EFECTIVO', 'BILLETERA_DIGITAL'];
