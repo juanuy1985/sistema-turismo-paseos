@@ -15,6 +15,8 @@ public interface PagoService {
 
     List<PagoResponse> listarPorReservaId(Long reservaId);
 
+    List<PagoResponse> listarPorCodigoReserva(String codigoReserva);
+
     List<PagoResponse> listarPorEstado(EstadoPago estado);
 
     List<PagoResponse> listarPorFecha(LocalDateTime desde, LocalDateTime hasta);
