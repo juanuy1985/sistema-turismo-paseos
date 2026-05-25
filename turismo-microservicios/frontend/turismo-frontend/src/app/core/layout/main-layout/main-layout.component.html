@@ -1,0 +1,17 @@
+<mat-toolbar color="primary" class="toolbar">
+  <span class="brand">Sistema Turismo</span>
+  <span class="spacer"></span>
+  <a
+    mat-button
+    *ngFor="let item of menu"
+    [routerLink]="item.path"
+    routerLinkActive="active-link"
+    [routerLinkActiveOptions]="{ exact: item.path === '/paquetes' }"
+  >
+    {{ item.label }}
+  </a>
+</mat-toolbar>
+
+<main class="content">
+  <router-outlet></router-outlet>
+</main>

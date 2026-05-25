@@ -1,0 +1,81 @@
+<h1>Registro de cliente</h1>
+
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="registrar()" class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombres</mat-label>
+        <input matInput formControlName="nombres" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Apellidos</mat-label>
+        <input matInput formControlName="apellidos" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Teléfono</mat-label>
+        <input matInput formControlName="telefono" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" type="password" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo de documento</mat-label>
+        <mat-select formControlName="tipoDocumento">
+          <mat-option value="DNI">DNI</mat-option>
+          <mat-option value="CE">CE</mat-option>
+          <mat-option value="PASAPORTE">Pasaporte</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Número de documento</mat-label>
+        <input matInput formControlName="numeroDocumento" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Dirección</mat-label>
+        <input matInput formControlName="direccion" />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+        Registrar cliente
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<div class="center" *ngIf="loading">
+  <mat-spinner diameter="36"></mat-spinner>
+</div>
+
+<mat-card class="alert success" *ngIf="successMessage">
+  {{ successMessage }}
+</mat-card>
+
+<mat-card class="alert error" *ngIf="errorMessage">
+  {{ errorMessage }}
+</mat-card>
+
+<mat-card *ngIf="clienteCreado" class="summary">
+  <mat-card-title>Cliente registrado</mat-card-title>
+  <mat-card-content>
+    <p><strong>Nombre:</strong> {{ clienteCreado.usuario.nombres }} {{ clienteCreado.usuario.apellidos }}</p>
+    <p><strong>Documento:</strong> {{ clienteCreado.tipoDocumento }} {{ clienteCreado.numeroDocumento }}</p>
+    <p><strong>Email:</strong> {{ clienteCreado.usuario.email }}</p>
+  </mat-card-content>
+</mat-card>

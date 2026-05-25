@@ -1,0 +1,59 @@
+<h1>Procesar pago</h1>
+
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="procesarPago()" class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>ID Reserva</mat-label>
+        <input matInput type="number" formControlName="reservaId" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Código de reserva</mat-label>
+        <input matInput formControlName="codigoReserva" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Monto</mat-label>
+        <input matInput type="number" step="0.01" formControlName="monto" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Moneda</mat-label>
+        <input matInput maxlength="3" formControlName="moneda" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Método de pago</mat-label>
+        <mat-select formControlName="metodoPago">
+          <mat-option *ngFor="let metodo of metodosPago" [value]="metodo">{{ metodo }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Número de operación (opcional)</mat-label>
+        <input matInput formControlName="numeroOperacion" />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="loading">Procesar pago</button>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<div class="center" *ngIf="loading">
+  <mat-spinner diameter="36"></mat-spinner>
+</div>
+
+<mat-card class="alert success" *ngIf="successMessage">{{ successMessage }}</mat-card>
+<mat-card class="alert error" *ngIf="errorMessage">{{ errorMessage }}</mat-card>
+
+<mat-card class="summary" *ngIf="pagoProcesado">
+  <mat-card-title>Confirmación de pago</mat-card-title>
+  <mat-card-content>
+    <p><strong>ID Pago:</strong> {{ pagoProcesado.id }}</p>
+    <p><strong>Estado:</strong> {{ pagoProcesado.estado }}</p>
+    <p><strong>Método:</strong> {{ pagoProcesado.metodoPago }}</p>
+    <p><strong>Monto:</strong> {{ pagoProcesado.moneda }} {{ pagoProcesado.monto }}</p>
+    <p *ngIf="pagoProcesado.comprobante"><strong>Comprobante:</strong> {{ pagoProcesado.comprobante.serie }}-{{ pagoProcesado.comprobante.numero }}</p>
+  </mat-card-content>
+</mat-card>

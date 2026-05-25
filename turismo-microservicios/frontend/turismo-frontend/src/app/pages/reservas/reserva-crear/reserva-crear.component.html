@@ -1,0 +1,97 @@
+<h1>Crear reserva</h1>
+
+<mat-card>
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="crearReserva()" class="form-grid">
+      <div class="document-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Documento de cliente</mat-label>
+          <input matInput formControlName="clienteDocumento" />
+        </mat-form-field>
+        <button mat-stroked-button color="primary" type="button" (click)="buscarClientePorDocumento()" [disabled]="searchingCliente">
+          Buscar cliente
+        </button>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>ID Cliente</mat-label>
+        <input matInput type="number" formControlName="clienteId" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Paquete</mat-label>
+        <mat-select formControlName="paqueteId">
+          <mat-option [value]="0" disabled>Seleccione un paquete</mat-option>
+          <mat-option *ngFor="let paquete of paquetes" [value]="paquete.id">
+            {{ paquete.titulo }} · {{ paquete.moneda }} {{ paquete.precio }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha de paseo</mat-label>
+        <input matInput type="date" formControlName="fechaPaseo" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Cantidad de personas</mat-label>
+        <input matInput type="number" formControlName="cantidadPersonas" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Moneda</mat-label>
+        <input matInput formControlName="moneda" maxlength="3" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nombres titular</mat-label>
+        <input matInput formControlName="nombresTitular" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Apellidos titular</mat-label>
+        <input matInput formControlName="apellidosTitular" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo documento titular</mat-label>
+        <mat-select formControlName="tipoDocumentoTitular">
+          <mat-option value="DNI">DNI</mat-option>
+          <mat-option value="CE">CE</mat-option>
+          <mat-option value="PASAPORTE">Pasaporte</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Número documento titular</mat-label>
+        <input matInput formControlName="numeroDocumentoTitular" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Edad titular</mat-label>
+        <input matInput type="number" formControlName="edadTitular" />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+        Confirmar reserva
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<div class="center" *ngIf="loading || searchingCliente">
+  <mat-spinner diameter="36"></mat-spinner>
+</div>
+
+<mat-card class="alert success" *ngIf="successMessage">{{ successMessage }}</mat-card>
+<mat-card class="alert error" *ngIf="errorMessage">{{ errorMessage }}</mat-card>
+
+<mat-card class="summary" *ngIf="reservaCreada">
+  <mat-card-title>Resumen de reserva</mat-card-title>
+  <mat-card-content>
+    <p><strong>ID:</strong> {{ reservaCreada.id }}</p>
+    <p><strong>Código:</strong> {{ reservaCreada.codigoReserva }}</p>
+    <p><strong>Estado:</strong> {{ reservaCreada.estado }}</p>
+    <p><strong>Total:</strong> {{ reservaCreada.moneda }} {{ reservaCreada.montoTotal }}</p>
+  </mat-card-content>
+</mat-card>

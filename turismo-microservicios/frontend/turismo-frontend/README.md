@@ -1,27 +1,62 @@
-# TurismoFrontend
+# Turismo Frontend (Angular)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.17.
+Frontend Angular del sistema de turismo para consumir exclusivamente el API Gateway.
 
-## Development server
+## Requisitos
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Node.js 18+
+- npm 9+
+- API Gateway ejecutándose en `http://localhost:8080`
 
-## Code scaffolding
+## Instalación
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+cd /home/runner/work/sistema-turismo-paseos/sistema-turismo-paseos/turismo-microservicios/frontend/turismo-frontend
+npm install
+```
 
-## Build
+## Ejecución
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+npm start
+```
 
-## Running unit tests
+La app queda en `http://localhost:4200`.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+> El proyecto usa `proxy.conf.json` para redirigir `/api/*` al Gateway (`http://localhost:8080`).
 
-## Running end-to-end tests
+## Scripts útiles
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- `npm start` → servidor de desarrollo
+- `npm run build` → build de producción
+- `npm test` → pruebas unitarias (Karma)
 
-## Further help
+## Endpoints consumidos (vía API Gateway)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- `GET /api/paquetes`
+- `GET /api/paquetes/{id}`
+- `POST /api/clientes`
+- `GET /api/clientes/documento/{numeroDocumento}`
+- `POST /api/reservas`
+- `GET /api/reservas/codigo/{codigoReserva}`
+- `GET /api/reservas/cliente/{clienteId}`
+- `POST /api/pagos`
+- `GET /api/pagos/codigo-reserva/{codigoReserva}`
+
+## Flujo UI implementado
+
+1. Listar paquetes
+2. Registrar cliente
+3. Crear reserva
+4. Consultar reserva (por código o cliente)
+5. Procesar pago
+6. Ver confirmaciones/notificaciones simuladas
+
+## Estructura principal
+
+- `src/app/core` → layout e interceptor global de errores HTTP
+- `src/app/shared` → recursos compartidos
+- `src/app/features` → lógica de flujo de notificaciones
+- `src/app/services` → servicios HTTP por dominio
+- `src/app/models` → modelos TypeScript
+- `src/app/pages` → pantallas de negocio

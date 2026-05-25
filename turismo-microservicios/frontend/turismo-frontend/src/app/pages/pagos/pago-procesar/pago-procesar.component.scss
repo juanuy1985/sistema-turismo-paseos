@@ -1,0 +1,27 @@
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.alert {
+  margin-top: 1rem;
+}
+
+.alert.success {
+  border-left: 4px solid #2e7d32;
+}
+
+.alert.error {
+  border-left: 4px solid #d32f2f;
+}
+
+.summary {
+  margin-top: 1rem;
+}
