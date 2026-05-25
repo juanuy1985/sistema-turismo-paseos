@@ -31,7 +31,7 @@ import java.util.List;
 @Slf4j
 public class UsuarioService {
 
-    private static final int PBKDF2_ITERATIONS = 65536;
+    private static final int PBKDF2_ITERATIONS = 210000;
     private static final int PBKDF2_KEY_LENGTH = 256;
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
