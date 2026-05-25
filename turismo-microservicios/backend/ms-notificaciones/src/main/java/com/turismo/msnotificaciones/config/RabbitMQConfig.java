@@ -30,7 +30,7 @@ public class RabbitMQConfig {
     private String pagosRoutingKey;
 
     @Bean
-    public DirectExchange turismoExchange() {
+    public DirectExchange eventExchange() {
         return new DirectExchange(exchangeName);
     }
 
@@ -45,13 +45,13 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding reservasBinding(Queue reservasQueue, DirectExchange turismoExchange) {
-        return BindingBuilder.bind(reservasQueue).to(turismoExchange).with(reservasRoutingKey);
+    public Binding reservasBinding(Queue reservasQueue, DirectExchange eventExchange) {
+        return BindingBuilder.bind(reservasQueue).to(eventExchange).with(reservasRoutingKey);
     }
 
     @Bean
-    public Binding pagosBinding(Queue pagosQueue, DirectExchange turismoExchange) {
-        return BindingBuilder.bind(pagosQueue).to(turismoExchange).with(pagosRoutingKey);
+    public Binding pagosBinding(Queue pagosQueue, DirectExchange eventExchange) {
+        return BindingBuilder.bind(pagosQueue).to(eventExchange).with(pagosRoutingKey);
     }
 
     @Bean

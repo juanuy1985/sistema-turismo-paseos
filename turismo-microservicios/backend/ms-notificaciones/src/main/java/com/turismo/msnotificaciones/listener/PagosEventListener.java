@@ -11,6 +11,10 @@ public class PagosEventListener {
 
     @RabbitListener(queues = "${app.rabbitmq.pagos.queue}")
     public void onPagoConfirmado(PagoConfirmadoEventDto event) {
+        if (event == null) {
+            log.warn("Evento pago.confirmado recibido sin payload");
+            return;
+        }
         log.info("Evento pago.confirmado recibido: pagoId={} reservaId={}", event.getPagoId(), event.getReservaId());
     }
 }

@@ -11,6 +11,10 @@ public class ReservasEventListener {
 
     @RabbitListener(queues = "${app.rabbitmq.reservas.queue}")
     public void onReservaCreada(ReservaCreadaEventDto event) {
+        if (event == null) {
+            log.warn("Evento reserva.creada recibido sin payload");
+            return;
+        }
         log.info("Evento reserva.creada recibido: reservaId={} codigoReserva={}", event.getReservaId(), event.getCodigoReserva());
     }
 }
