@@ -1,0 +1,377 @@
+{
+  "info": {
+    "_postman_id": "9ab6cf4a-5f52-475f-95f2-52095c4b5a1b",
+    "name": "Sistema Turismo - Flujo completo backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Flujo end-to-end: listar paquetes, crear cliente, crear reserva, procesar pago y verificar la emisión de notificaciones en logs."
+  },
+  "item": [
+    {
+      "name": "1) Listar paquetes",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/paquetes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "paquetes"
+          ]
+        },
+        "description": "Obtiene paquetes turísticos disponibles."
+      },
+      "response": [
+        {
+          "name": "200 OK - Lista de paquetes",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/paquetes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "paquetes"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"id\": 1,\n    \"titulo\": \"City Tour Centro Histórico\",\n    \"descripcion\": \"Recorrido guiado por el centro histórico\",\n    \"destinoId\": 1,\n    \"destinoNombre\": \"Lima\",\n    \"tipoPaseoId\": 2,\n    \"tipoPaseoNombre\": \"Cultural\",\n    \"precio\": 150.00,\n    \"moneda\": \"PEN\",\n    \"duracionDias\": 1,\n    \"cuposDisponibles\": 20,\n    \"cuposReservados\": 5,\n    \"cuposActuales\": 15,\n    \"estadoActivo\": true,\n    \"fechaCreacion\": \"2026-05-25T01:10:20\",\n    \"fechaActualizacion\": \"2026-05-25T01:10:20\"\n  }\n]"
+        }
+      ],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "const data = pm.response.json();",
+              "if (Array.isArray(data) && data.length > 0) {",
+              "  pm.collectionVariables.set('paqueteId', data[0].id);",
+              "  pm.collectionVariables.set('montoTotal', data[0].precio);",
+              "  pm.collectionVariables.set('moneda', data[0].moneda);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2) Crear cliente",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombres\": \"Juan\",\n  \"apellidos\": \"Pérez\",\n  \"email\": \"juan.perez+postman@example.com\",\n  \"telefono\": \"+51987654321\",\n  \"username\": \"juan.perez.postman\",\n  \"password\": \"ClaveSegura123\",\n  \"tipoDocumento\": \"DNI\",\n  \"numeroDocumento\": \"77889900\",\n  \"direccion\": \"Av. Siempre Viva 742\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/clientes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "clientes"
+          ]
+        },
+        "description": "Registra un cliente para asociarlo a la reserva."
+      },
+      "response": [
+        {
+          "name": "201 Created - Cliente registrado",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"id\": 12,\n  \"tipoDocumento\": \"DNI\",\n  \"numeroDocumento\": \"77889900\",\n  \"direccion\": \"Av. Siempre Viva 742\",\n  \"usuario\": {\n    \"id\": 45,\n    \"nombres\": \"Juan\",\n    \"apellidos\": \"Pérez\",\n    \"email\": \"juan.perez+postman@example.com\",\n    \"telefono\": \"+51987654321\",\n    \"username\": \"juan.perez.postman\",\n    \"activo\": true,\n    \"rolId\": 2,\n    \"rolNombre\": \"CLIENTE\"\n  }\n}"
+        }
+      ],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', function () {",
+              "  pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "if (data && data.id) {",
+              "  pm.collectionVariables.set('clienteId', data.id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3) Crear reserva",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"clienteId\": {{clienteId}},\n  \"paqueteId\": {{paqueteId}},\n  \"fechaReserva\": \"2026-05-25\",\n  \"fechaPaseo\": \"2026-06-15\",\n  \"moneda\": \"{{moneda}}\",\n  \"cantidadPersonas\": 2,\n  \"personas\": [\n    {\n      \"nombres\": \"Juan\",\n      \"apellidos\": \"Pérez\",\n      \"tipoDocumento\": \"DNI\",\n      \"numeroDocumento\": \"77889900\",\n      \"edad\": 32\n    },\n    {\n      \"nombres\": \"Ana\",\n      \"apellidos\": \"Gómez\",\n      \"tipoDocumento\": \"DNI\",\n      \"numeroDocumento\": \"11223344\",\n      \"edad\": 28\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/reservas",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "reservas"
+          ]
+        },
+        "description": "Crea una reserva y publica el evento `reserva.creada` en RabbitMQ."
+      },
+      "response": [
+        {
+          "name": "201 Created - Reserva creada",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reservas"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"id\": 31,\n  \"clienteId\": 12,\n  \"paqueteId\": 1,\n  \"fechaReserva\": \"2026-05-25\",\n  \"fechaPaseo\": \"2026-06-15\",\n  \"estado\": \"PENDIENTE\",\n  \"moneda\": \"PEN\",\n  \"montoTotal\": 300.00,\n  \"codigoReserva\": \"RES-7DBB4D35B87E4B4D91CD5A3E5F0A43AA\",\n  \"detalles\": [\n    {\n      \"id\": 70,\n      \"cantidadPersonas\": 2,\n      \"precioUnitario\": 150.00,\n      \"subtotal\": 300.00,\n      \"personas\": [\n        {\n          \"id\": 101,\n          \"nombres\": \"Juan\",\n          \"apellidos\": \"Pérez\",\n          \"tipoDocumento\": \"DNI\",\n          \"numeroDocumento\": \"77889900\",\n          \"edad\": 32\n        },\n        {\n          \"id\": 102,\n          \"nombres\": \"Ana\",\n          \"apellidos\": \"Gómez\",\n          \"tipoDocumento\": \"DNI\",\n          \"numeroDocumento\": \"11223344\",\n          \"edad\": 28\n        }\n      ]\n    }\n  ],\n  \"creadoEn\": \"2026-05-25T06:10:00\",\n  \"actualizadoEn\": \"2026-05-25T06:10:00\"\n}"
+        }
+      ],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status 201', function () {",
+              "  pm.response.to.have.status(201);",
+              "});",
+              "const data = pm.response.json();",
+              "if (data) {",
+              "  pm.collectionVariables.set('reservaId', data.id);",
+              "  pm.collectionVariables.set('codigoReserva', data.codigoReserva);",
+              "  pm.collectionVariables.set('montoTotal', data.montoTotal);",
+              "  pm.collectionVariables.set('moneda', data.moneda);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4) Procesar pago",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reservaId\": {{reservaId}},\n  \"codigoReserva\": \"{{codigoReserva}}\",\n  \"monto\": {{montoTotal}},\n  \"moneda\": \"{{moneda}}\",\n  \"metodoPago\": \"TARJETA\",\n  \"numeroOperacion\": \"OP-POSTMAN-001\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/pagos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "pagos"
+          ]
+        },
+        "description": "Registra el pago, lo marca como CONFIRMADO y publica el evento `pago.confirmado`."
+      },
+      "response": [
+        {
+          "name": "201 Created - Pago confirmado",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/pagos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pagos"
+              ]
+            }
+          },
+          "status": "Created",
+          "code": 201,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"id\": 15,\n  \"reservaId\": 31,\n  \"codigoReserva\": \"RES-7DBB4D35B87E4B4D91CD5A3E5F0A43AA\",\n  \"monto\": 300.00,\n  \"moneda\": \"PEN\",\n  \"estado\": \"CONFIRMADO\",\n  \"fechaPago\": \"2026-05-25T06:12:30\",\n  \"metodoPago\": \"TARJETA\",\n  \"numeroOperacion\": \"OP-POSTMAN-001\",\n  \"comprobante\": {\n    \"id\": 15,\n    \"serie\": \"B001\",\n    \"numero\": \"20260525061230-AB12\",\n    \"tipo\": \"BOLETA\",\n    \"fechaEmision\": \"2026-05-25T06:12:30\",\n    \"montoTotal\": 300.00\n  },\n  \"creadoEn\": \"2026-05-25T06:12:30\",\n  \"actualizadoEn\": \"2026-05-25T06:12:30\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "5) Verificar notificaciones (consulta + logs)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/pagos/codigo-reserva/{{codigoReserva}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "pagos",
+            "codigo-reserva",
+            "{{codigoReserva}}"
+          ]
+        },
+        "description": "Verifica por API que el pago quedó registrado. Luego valida logs de ms-notificaciones con:\n\n`docker logs -f <contenedor-ms-notificaciones>`\n\nMensajes esperados:\n- Simulación notificación reserva creada ...\n- Simulación notificación pago confirmado ..."
+      },
+      "response": [
+        {
+          "name": "200 OK - Pago encontrado por código de reserva",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/pagos/codigo-reserva/{{codigoReserva}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pagos",
+                "codigo-reserva",
+                "{{codigoReserva}}"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "[\n  {\n    \"id\": 15,\n    \"reservaId\": 31,\n    \"codigoReserva\": \"RES-7DBB4D35B87E4B4D91CD5A3E5F0A43AA\",\n    \"monto\": 300.00,\n    \"moneda\": \"PEN\",\n    \"estado\": \"CONFIRMADO\"\n  }\n]"
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "clienteId",
+      "value": "1"
+    },
+    {
+      "key": "paqueteId",
+      "value": "1"
+    },
+    {
+      "key": "reservaId",
+      "value": "1"
+    },
+    {
+      "key": "codigoReserva",
+      "value": "RES-EJEMPLO"
+    },
+    {
+      "key": "montoTotal",
+      "value": "150.00"
+    },
+    {
+      "key": "moneda",
+      "value": "PEN"
+    }
+  ]
+}
