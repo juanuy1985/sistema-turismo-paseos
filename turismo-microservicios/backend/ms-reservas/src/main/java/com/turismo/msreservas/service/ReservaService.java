@@ -97,10 +97,7 @@ public class ReservaService {
 
     private void validarClienteExistente(Long clienteId) {
         try {
-            ClienteResponse cliente = clienteClient.obtenerPorId(clienteId);
-            if (cliente == null) {
-                throw new RecursoNoEncontradoException("Cliente no encontrado con ID: " + clienteId);
-            }
+            clienteClient.obtenerPorId(clienteId);
         } catch (FeignException.NotFound ex) {
             throw new RecursoNoEncontradoException("Cliente no encontrado con ID: " + clienteId);
         }
