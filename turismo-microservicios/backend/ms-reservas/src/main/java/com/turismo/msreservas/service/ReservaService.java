@@ -9,13 +9,11 @@ import com.turismo.msreservas.model.DetalleReserva;
 import com.turismo.msreservas.model.EstadoReserva;
 import com.turismo.msreservas.model.PersonaReserva;
 import com.turismo.msreservas.model.Reserva;
+import com.turismo.msreservas.publisher.ReservaCreadaPublisher;
 import com.turismo.msreservas.repository.ReservaRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +30,7 @@ public class ReservaService {
     private final ReservaRepository reservaRepository;
     private final ClienteClient clienteClient;
     private final PaqueteClient paqueteClient;
-    private final RabbitTemplate rabbitTemplate;
-    private final DirectExchange reservasExchange;
-
-    @Value("${app.rabbitmq.reservas.routing-key}")
-    private String reservasRoutingKey;
+    private final ReservaCreadaPublisher reservaCreadaPublisher;
 
     @Transactional(readOnly = true)
     public List<ReservaDTO> listarTodas() {
@@ -111,10 +105,7 @@ public class ReservaService {
         Reserva guardada = reservaRepository.save(reserva);
         log.info("Reserva creada con ID: {}", guardada.getId());
 
-        rabbitTemplate.convertAndSend(
-                reservasExchange.getName(),
-                reservasRoutingKey,
-                toDTO(guardada));
+        reservaCreadaPublisher.publicar(guardada);
 
         return toDTO(guardada);
     }
