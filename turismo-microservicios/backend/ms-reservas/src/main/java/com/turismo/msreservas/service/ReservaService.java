@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -49,7 +50,8 @@ public class ReservaService {
 
     @Transactional(readOnly = true)
     public Mono<ReservaDTO> obtenerPorIdReactive(Long id) {
-        return Mono.fromSupplier(() -> obtenerPorId(id));
+        return Mono.fromCallable(() -> obtenerPorId(id))
+                .subscribeOn(Schedulers.boundedElastic());
     }
 
     @Transactional(readOnly = true)
