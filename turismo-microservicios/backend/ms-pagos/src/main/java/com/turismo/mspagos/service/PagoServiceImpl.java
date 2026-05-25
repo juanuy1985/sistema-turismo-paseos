@@ -11,6 +11,7 @@ import com.turismo.mspagos.model.Comprobante;
 import com.turismo.mspagos.model.EstadoPago;
 import com.turismo.mspagos.model.Pago;
 import com.turismo.mspagos.model.TipoComprobante;
+import com.turismo.mspagos.publisher.PagoConfirmadoPublisher;
 import com.turismo.mspagos.repository.PagoRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class PagoServiceImpl implements PagoService {
 
     private final PagoRepository pagoRepository;
     private final ReservaClient reservaClient;
+    private final PagoConfirmadoPublisher pagoConfirmadoPublisher;
 
     @Override
     @Transactional
@@ -97,6 +99,7 @@ public class PagoServiceImpl implements PagoService {
 
         Pago guardado = pagoRepository.save(pago);
         log.info("Pago registrado exitosamente con id={}, numeroOperacion={}", guardado.getId(), guardado.getNumeroOperacion());
+        pagoConfirmadoPublisher.publicar(guardado);
 
         return mapToResponse(guardado);
     }
