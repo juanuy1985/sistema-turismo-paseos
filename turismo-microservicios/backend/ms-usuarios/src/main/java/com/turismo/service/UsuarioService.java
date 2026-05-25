@@ -33,7 +33,7 @@ public class UsuarioService {
 
     private static final int PBKDF2_ITERATIONS = 65536;
     private static final int PBKDF2_KEY_LENGTH = 256;
-    private final SecureRandom secureRandom = new SecureRandom();
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private final UsuarioRepository usuarioRepository;
     private final ClienteRepository clienteRepository;
@@ -164,7 +164,7 @@ public class UsuarioService {
 
     private String hashPassword(String password) {
         byte[] salt = new byte[16];
-        secureRandom.nextBytes(salt);
+        SECURE_RANDOM.nextBytes(salt);
         PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, PBKDF2_ITERATIONS, PBKDF2_KEY_LENGTH);
 
         try {
