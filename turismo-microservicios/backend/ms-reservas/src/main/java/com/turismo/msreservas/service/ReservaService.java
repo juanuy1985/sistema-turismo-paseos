@@ -1,5 +1,6 @@
 package com.turismo.msreservas.service;
 
+import com.turismo.msreservas.client.ClienteClient;
 import com.turismo.msreservas.client.PaqueteClient;
 import com.turismo.msreservas.config.RabbitMQConfig;
 import com.turismo.msreservas.dto.*;
@@ -9,6 +10,7 @@ import com.turismo.msreservas.model.EstadoReserva;
 import com.turismo.msreservas.model.PersonaReserva;
 import com.turismo.msreservas.model.Reserva;
 import com.turismo.msreservas.repository.ReservaRepository;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -24,6 +26,7 @@ import java.util.List;
 public class ReservaService {
 
     private final ReservaRepository reservaRepository;
+    private final ClienteClient clienteClient;
     private final PaqueteClient paqueteClient;
     private final RabbitTemplate rabbitTemplate;
 
@@ -49,6 +52,7 @@ public class ReservaService {
     }
 
     public ReservaDTO crear(CrearReservaDTO dto) {
+        validarClienteExistente(dto.getClienteId());
         PaqueteResponse paquete = paqueteClient.obtenerPorId(dto.getPaqueteId());
 
         DetalleReserva detalle = DetalleReserva.builder()
@@ -89,6 +93,14 @@ public class ReservaService {
                 toDTO(guardada));
 
         return toDTO(guardada);
+    }
+
+    private void validarClienteExistente(Long clienteId) {
+        try {
+            clienteClient.obtenerPorId(clienteId);
+        } catch (FeignException.NotFound ex) {
+            throw new RecursoNoEncontradoException("Cliente no encontrado con ID: " + clienteId);
+        }
     }
 
     public ReservaDTO actualizarEstado(Long id, EstadoReserva nuevoEstado) {
