@@ -57,13 +57,24 @@ public class ReservaService {
                 .build();
         detalle.recalcularSubtotal();
 
+        dto.getPersonas().forEach(personaDTO -> {
+            PersonaReserva persona = PersonaReserva.builder()
+                    .nombres(personaDTO.getNombres())
+                    .apellidos(personaDTO.getApellidos())
+                    .tipoDocumento(personaDTO.getTipoDocumento())
+                    .numeroDocumento(personaDTO.getNumeroDocumento())
+                    .edad(personaDTO.getEdad())
+                    .build();
+            detalle.addPersona(persona);
+        });
+
         Reserva reserva = Reserva.builder()
                 .clienteId(dto.getClienteId())
                 .paqueteId(dto.getPaqueteId())
                 .fechaReserva(dto.getFechaReserva())
                 .fechaPaseo(dto.getFechaPaseo())
                 .estado(EstadoReserva.PENDIENTE)
-                .moneda(dto.getMoneda().toUpperCase())
+                .moneda(dto.getMoneda().trim().toUpperCase())
                 .montoTotal(detalle.getSubtotal())
                 .build();
 
