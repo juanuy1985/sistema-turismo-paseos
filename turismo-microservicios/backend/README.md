@@ -29,6 +29,7 @@ Microservicio de gestión de paquetes turísticos.
 ### 4. **ms-usuarios**
 Microservicio de gestión de usuarios.
 - Puerto recomendado: 8082
+- Estado: Inicializado en `backend/ms-usuarios`
 - Responsabilidades:
   - Autenticación y autorización
   - Gestión de perfiles de usuario
