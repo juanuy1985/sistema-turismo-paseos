@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     Optional<Cliente> findByNumeroDocumento(String numeroDocumento);
+
+    boolean existsByNumeroDocumento(String numeroDocumento);
 }
