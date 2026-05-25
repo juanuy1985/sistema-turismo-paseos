@@ -55,6 +55,7 @@ Microservicio de procesamiento de pagos.
 ### 7. **ms-notificaciones**
 Microservicio de notificaciones.
 - Puerto recomendado: 8085
+- Estado: Inicializado en `backend/ms-notificaciones`
 - Responsabilidades:
   - Envío de emails
   - Notificaciones SMS
