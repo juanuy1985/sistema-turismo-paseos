@@ -1,0 +1,30 @@
+# Ignorar archivos y carpetas de Maven
+target/
+*.jar
+*.war
+*.ear
+
+# Ignorar archivos de IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+
+# Ignorar archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar logs
+*.log
+logs/
+
+# Ignorar archivos de construcción
+.classpath
+.project
+.settings/
+bin/
+
+# Maven
+.m2/
