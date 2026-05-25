@@ -10,10 +10,15 @@ services:
       POSTGRES_USER: turismo_user
       POSTGRES_PASSWORD: turismo_password
       PGDATA: /var/lib/postgresql/data/pgdata
+      # Configuración preparada para ms-reservas
+      MS_RESERVAS_DB_URL: jdbc:postgresql://postgresql:5432/bd_reservas
+      MS_RESERVAS_DB_USERNAME: reservas_user
+      MS_RESERVAS_DB_PASSWORD: reservas_password
     ports:
       - "5432:5432"
     volumes:
       - postgresql_data:/var/lib/postgresql/data
+      - ./postgresql/initdb:/docker-entrypoint-initdb.d:ro
     networks:
       - turismo-network
     healthcheck:
