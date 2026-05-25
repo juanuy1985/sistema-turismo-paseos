@@ -1,0 +1,32 @@
+<section class="page-header">
+  <h1>Paquetes turísticos</h1>
+  <button mat-raised-button color="primary" (click)="cargarPaquetes()">Actualizar</button>
+</section>
+
+<div class="center" *ngIf="loading">
+  <mat-spinner diameter="40"></mat-spinner>
+</div>
+
+<mat-card class="alert error" *ngIf="errorMessage">{{ errorMessage }}</mat-card>
+
+<div class="grid" *ngIf="!loading && !errorMessage">
+  <mat-card class="paquete-card" *ngFor="let paquete of paquetes">
+    <mat-card-header>
+      <mat-card-title>{{ paquete.titulo }}</mat-card-title>
+      <mat-card-subtitle>{{ paquete.destinoNombre }} · {{ paquete.tipoPaseoNombre }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p>{{ paquete.descripcion }}</p>
+      <p><strong>Duración:</strong> {{ paquete.duracionDias }} días</p>
+      <p><strong>Cupos actuales:</strong> {{ paquete.cuposActuales }}</p>
+      <mat-chip-set>
+        <mat-chip color="primary" selected>{{ paquete.moneda }} {{ paquete.precio }}</mat-chip>
+      </mat-chip-set>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-button color="accent" (click)="verDetalle(paquete.id)">Ver detalle</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

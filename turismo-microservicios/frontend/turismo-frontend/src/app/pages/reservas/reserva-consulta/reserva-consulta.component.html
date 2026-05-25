@@ -1,0 +1,49 @@
+<h1>Consultar reservas</h1>
+
+<div class="search-grid">
+  <mat-card>
+    <mat-card-title>Buscar por código</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="formCodigo" (ngSubmit)="consultarPorCodigo()" class="inline-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Código de reserva</mat-label>
+          <input matInput formControlName="codigoReserva" />
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">Buscar</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-title>Buscar por cliente</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="formCliente" (ngSubmit)="consultarPorCliente()" class="inline-form">
+        <mat-form-field appearance="outline">
+          <mat-label>ID Cliente</mat-label>
+          <input matInput type="number" formControlName="clienteId" />
+        </mat-form-field>
+        <button mat-raised-button color="accent" type="submit">Buscar</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="center" *ngIf="loading">
+  <mat-spinner diameter="36"></mat-spinner>
+</div>
+
+<mat-card class="alert error" *ngIf="errorMessage">{{ errorMessage }}</mat-card>
+
+<div class="result-grid" *ngIf="!loading && reservas.length > 0">
+  <mat-card *ngFor="let reserva of reservas">
+    <mat-card-title>{{ reserva.codigoReserva }}</mat-card-title>
+    <mat-card-content>
+      <p><strong>ID:</strong> {{ reserva.id }}</p>
+      <p><strong>Cliente:</strong> {{ reserva.clienteId }}</p>
+      <p><strong>Paquete:</strong> {{ reserva.paqueteId }}</p>
+      <p><strong>Fecha paseo:</strong> {{ reserva.fechaPaseo }}</p>
+      <p><strong>Estado:</strong> {{ reserva.estado }}</p>
+      <p><strong>Total:</strong> {{ reserva.moneda }} {{ reserva.montoTotal }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>

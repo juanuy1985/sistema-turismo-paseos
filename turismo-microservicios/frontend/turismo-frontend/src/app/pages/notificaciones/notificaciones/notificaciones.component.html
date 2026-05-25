@@ -1,0 +1,21 @@
+<section class="header">
+  <h1>Notificaciones</h1>
+  <button mat-raised-button color="primary" (click)="simularNotificacion()">Simular</button>
+</section>
+
+<mat-card *ngIf="notificaciones.length === 0">
+  <mat-card-content>No hay notificaciones registradas aún.</mat-card-content>
+</mat-card>
+
+<div class="items" *ngIf="notificaciones.length > 0">
+  <mat-card *ngFor="let item of notificaciones" class="item-card">
+    <mat-card-content>
+      <p class="item-title">
+        <mat-icon>{{ item.tipo === 'SUCCESS' ? 'check_circle' : item.tipo === 'WARNING' ? 'warning' : 'info' }}</mat-icon>
+        {{ item.titulo }}
+      </p>
+      <p>{{ item.mensaje }}</p>
+      <p class="date">{{ item.fecha | date: 'short' }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>

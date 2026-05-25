@@ -1,0 +1,23 @@
+<a mat-button routerLink="/paquetes">← Volver a paquetes</a>
+
+<div class="center" *ngIf="loading">
+  <mat-spinner diameter="40"></mat-spinner>
+</div>
+
+<mat-card class="alert error" *ngIf="errorMessage">{{ errorMessage }}</mat-card>
+
+<mat-card *ngIf="paquete && !loading" class="detail-card">
+  <mat-card-header>
+    <mat-card-title>{{ paquete.titulo }}</mat-card-title>
+    <mat-card-subtitle>{{ paquete.destinoNombre }} · {{ paquete.tipoPaseoNombre }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p>{{ paquete.descripcion }}</p>
+    <p><strong>Precio:</strong> {{ paquete.moneda }} {{ paquete.precio }}</p>
+    <p><strong>Duración:</strong> {{ paquete.duracionDias }} días</p>
+    <p><strong>Cupos disponibles:</strong> {{ paquete.cuposDisponibles }}</p>
+    <p><strong>Cupos reservados:</strong> {{ paquete.cuposReservados }}</p>
+    <p><strong>Estado:</strong> {{ paquete.estadoActivo ? 'Activo' : 'Inactivo' }}</p>
+  </mat-card-content>
+</mat-card>

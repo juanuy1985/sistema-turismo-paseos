@@ -1,0 +1,24 @@
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.brand {
+  font-weight: 600;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.active-link {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.content {
+  max-width: 1200px;
+  margin: 1.5rem auto;
+  padding: 0 1rem 2rem;
+}

@@ -1,0 +1,14 @@
+.detail-card {
+  margin-top: 1rem;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.alert.error {
+  margin-top: 1rem;
+  border-left: 4px solid #d32f2f;
+}

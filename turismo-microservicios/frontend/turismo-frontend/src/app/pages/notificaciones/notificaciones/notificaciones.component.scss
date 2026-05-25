@@ -1,0 +1,23 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.items {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.item-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.date {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
