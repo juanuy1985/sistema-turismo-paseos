@@ -10,6 +10,7 @@ import com.turismo.msreservas.model.EstadoReserva;
 import com.turismo.msreservas.model.PersonaReserva;
 import com.turismo.msreservas.model.Reserva;
 import com.turismo.msreservas.repository.ReservaRepository;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -95,8 +96,12 @@ public class ReservaService {
     }
 
     private void validarClienteExistente(Long clienteId) {
-        ClienteResponse cliente = clienteClient.obtenerPorId(clienteId);
-        if (cliente == null) {
+        try {
+            ClienteResponse cliente = clienteClient.obtenerPorId(clienteId);
+            if (cliente == null) {
+                throw new RecursoNoEncontradoException("Cliente no encontrado con ID: " + clienteId);
+            }
+        } catch (FeignException.NotFound ex) {
             throw new RecursoNoEncontradoException("Cliente no encontrado con ID: " + clienteId);
         }
     }

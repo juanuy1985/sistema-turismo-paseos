@@ -19,7 +19,7 @@ public class ClienteResponse {
     private Boolean activo;
 
     @JsonProperty("usuario")
-    private void unpackUsuario(UsuarioClienteResponse usuario) {
+    private void extraerUsuario(UsuarioClienteResponse usuario) {
         if (usuario == null) {
             return;
         }
