@@ -1,5 +1,7 @@
 package com.turismo.controller;
 
+import com.turismo.exception.RecursoDuplicadoException;
+import com.turismo.exception.RecursoNoEncontradoException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -26,24 +28,24 @@ public class RestExceptionHandler {
         return ResponseEntity.badRequest().body(body);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
-        String message = ex.getMessage() == null ? "Solicitud inválida" : ex.getMessage();
-        HttpStatus status = resolveStatus(message);
-
+    @ExceptionHandler(RecursoNoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> handleNotFound(RecursoNoEncontradoException ex) {
         Map<String, String> body = new HashMap<>();
-        body.put("mensaje", message);
-        return ResponseEntity.status(status).body(body);
+        body.put("mensaje", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
-    private HttpStatus resolveStatus(String message) {
-        String normalized = message.toLowerCase();
-        if (normalized.contains("no encontrado") || normalized.contains("no existe")) {
-            return HttpStatus.NOT_FOUND;
-        }
-        if (normalized.contains("ya está registrado")) {
-            return HttpStatus.CONFLICT;
-        }
-        return HttpStatus.BAD_REQUEST;
+    @ExceptionHandler(RecursoDuplicadoException.class)
+    public ResponseEntity<Map<String, String>> handleDuplicate(RecursoDuplicadoException ex) {
+        Map<String, String> body = new HashMap<>();
+        body.put("mensaje", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
+        Map<String, String> body = new HashMap<>();
+        body.put("mensaje", ex.getMessage() == null ? "Solicitud inválida" : ex.getMessage());
+        return ResponseEntity.badRequest().body(body);
     }
 }

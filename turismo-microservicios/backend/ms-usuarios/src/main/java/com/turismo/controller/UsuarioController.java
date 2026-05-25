@@ -48,6 +48,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public UsuarioRespuestaDTO desactivar(@PathVariable Long id) {
         return usuarioService.desactivarUsuario(id);
     }
