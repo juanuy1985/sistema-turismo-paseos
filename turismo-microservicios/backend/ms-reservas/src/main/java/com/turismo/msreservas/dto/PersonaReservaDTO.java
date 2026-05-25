@@ -1,5 +1,6 @@
 package com.turismo.msreservas.dto;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,5 +31,6 @@ public class PersonaReservaDTO {
 
     @NotNull(message = "La edad de la persona es obligatoria")
     @Min(value = 0, message = "La edad de la persona no puede ser negativa")
+    @Max(value = 120, message = "La edad de la persona no puede superar 120 años")
     private Integer edad;
 }
