@@ -42,10 +42,4 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgument(IllegalArgumentException ex) {
-        Map<String, String> body = new HashMap<>();
-        body.put("mensaje", ex.getMessage() == null ? "Solicitud inválida" : ex.getMessage());
-        return ResponseEntity.badRequest().body(body);
-    }
 }
