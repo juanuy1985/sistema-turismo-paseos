@@ -43,10 +43,9 @@ public class UsuarioActualizacionDTO {
     private String username;
 
     @Pattern(
-            regexp = ".*\\S.*",
-            message = "La contraseña no puede contener solo espacios en blanco"
+            regexp = "^$|^(?=\\S)(?=.*\\S$).{8,255}$",
+            message = "La contraseña debe tener entre 8 y 255 caracteres cuando se envía y no puede contener solo espacios"
     )
-    @Size(min = 8, max = 255, message = "La contraseña debe tener entre 8 y 255 caracteres")
     private String password;
 
     @NotNull(message = "El estado activo es requerido")
