@@ -18,7 +18,7 @@ public interface PagoRepository extends JpaRepository<Pago, Long> {
 
     List<Pago> findByEstado(EstadoPago estado);
 
-    List<Pago> findByNumeroOperacion(String numeroOperacion);
+    Optional<Pago> findByNumeroOperacion(String numeroOperacion);
 
     List<Pago> findByFechaPagoBetween(LocalDateTime fechaInicio, LocalDateTime fechaFin);
 }

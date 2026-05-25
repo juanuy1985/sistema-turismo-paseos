@@ -2,14 +2,13 @@ package com.turismo.mspagos.repository;
 
 import com.turismo.mspagos.model.MetodoPago;
 import com.turismo.mspagos.model.Pago;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.Repository;
 
 import java.util.List;
 
-@Repository
-public interface MetodoPagoRepository extends JpaRepository<Pago, Long> {
+@org.springframework.stereotype.Repository
+public interface MetodoPagoRepository extends Repository<Pago, Long> {
 
     @Query("SELECT DISTINCT p.metodoPago FROM Pago p ORDER BY p.metodoPago")
     List<MetodoPago> findAllMetodosPago();
