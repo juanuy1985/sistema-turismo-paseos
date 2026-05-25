@@ -133,7 +133,7 @@ public class ReservaService {
     }
 
     private BigDecimal calcularMontoTotal(BigDecimal precioUnitario, Integer cantidadPersonas) {
-        return precioUnitario.multiply(BigDecimal.valueOf(cantidadPersonas.longValue()));
+        return precioUnitario.multiply(BigDecimal.valueOf(cantidadPersonas));
     }
 
     private String generarCodigoReservaUnico() {
@@ -143,7 +143,7 @@ public class ReservaService {
                 return codigo;
             }
         }
-        throw new ReglaNegocioException("No se pudo generar un código único de reserva");
+        throw new IllegalStateException("No se pudo generar un código único de reserva");
     }
 
     public ReservaDTO actualizarEstado(Long id, EstadoReserva nuevoEstado) {
