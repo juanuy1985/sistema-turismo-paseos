@@ -14,7 +14,7 @@ BEGIN
   IF :'pagos_db_password' !~ '[A-Z]'
      OR :'pagos_db_password' !~ '[a-z]'
      OR :'pagos_db_password' !~ '[0-9]'
-     OR :'pagos_db_password' !~ '[^A-Za-z0-9]' THEN
+     OR :'pagos_db_password' !~ '[!@#$%^&*()_+=-]' THEN
     RAISE EXCEPTION 'PAGOS_DB_PASSWORD debe incluir mayúsculas, minúsculas, números y símbolos';
   END IF;
 END
