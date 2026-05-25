@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("")
+@RequestMapping
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Reservas", description = "API REST para la gestión de reservas turísticas")
